@@ -23,6 +23,8 @@
             --green: #4a8c5c; --green-light: #e8f5ec;
             --red: #c0392b; --red-light: #fde8e6;
             --blue-accent: #3a7bd5;
+            --sunday: #8e44ad;
+            --sunday-light: #f3e8ff;
             --bottom-nav-height: 64px;
             --safe-bottom: env(safe-area-inset-bottom, 0px);
             --safe-top: env(safe-area-inset-top, 0px);
@@ -39,7 +41,6 @@
         }
         .hidden { display: none !important; }
 
-        /* OFFLINE INDICATOR */
         .offline-indicator {
             position: fixed;
             top: 0;
@@ -64,9 +65,6 @@
         }
         .offline-indicator.show { transform: translateY(0); }
         .offline-indicator.online { background: #2c7a4d; }
-        .offline-indicator.syncing { background: #d4a017; }
-        .offline-indicator .indicator-icon { font-size: 1.1rem; }
-        .offline-indicator .indicator-text { flex: 1; text-align: left; }
         .offline-indicator .retry-btn {
             background: rgba(255,255,255,0.2);
             border: none;
@@ -77,21 +75,7 @@
             cursor: pointer;
             font-weight: 500;
         }
-        .offline-indicator .close-indicator {
-            background: rgba(0,0,0,0.3);
-            border: none;
-            color: white;
-            width: 28px;
-            height: 28px;
-            border-radius: 50%;
-            cursor: pointer;
-            font-size: 1.1rem;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-        }
 
-        /* LOADER */
         #loader { 
             position: fixed; inset: 0; z-index: 10000; 
             background: linear-gradient(135deg, #0f1a30, #1a2a4a 50%, #2a3f6e); 
@@ -107,17 +91,15 @@
         .loader-cross::before { width: 10px; height: 100%; left: 50%; transform: translateX(-50%); }
         .loader-cross::after { width: 50px; height: 10px; top: 25px; left: 50%; transform: translateX(-50%); }
         @keyframes crossGlow { 
-            0%,100%{box-shadow:0 0 10px var(--gold),0 0 20px rgba(201,168,76,0.3);} 
-            50%{box-shadow:0 0 20px var(--gold),0 0 40px rgba(201,168,76,0.6),0 0 60px rgba(201,168,76,0.3);} 
+            0%,100%{box-shadow:0 0 10px var(--gold);} 
+            50%{box-shadow:0 0 20px var(--gold),0 0 40px rgba(201,168,76,0.6);} 
         }
         .loader-text { font-family: 'Montserrat', sans-serif; font-size: 1.8rem; font-weight: 700; color: #fff; letter-spacing: 4px; margin-bottom: 20px; }
         .loader-text span { color: var(--gold); }
-        .loader-subtitle { color: rgba(255,255,255,0.5); font-size: 0.75rem; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 30px; }
         .loader-bar-container { width: 160px; height: 2px; background: rgba(255,255,255,0.1); border-radius: 2px; overflow: hidden; }
-        .loader-bar { height: 100%; width: 0%; background: linear-gradient(90deg, var(--gold-dark), var(--gold), var(--gold-light)); border-radius: 2px; animation: loadBar 2s ease forwards; }
+        .loader-bar { height: 100%; width: 0%; background: linear-gradient(90deg, var(--gold-dark), var(--gold), var(--gold-light)); animation: loadBar 2s ease forwards; }
         @keyframes loadBar { to{width:100%;} }
 
-        /* HEADER */
         header { background: linear-gradient(135deg, var(--primary), var(--primary-light)); position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 20px rgba(0,0,0,0.15); padding-top: var(--safe-top); }
         .header-inner { max-width: 1200px; margin: 0 auto; padding: 10px 16px; display: flex; align-items: center; justify-content: space-between; gap: 12px; }
         .logo-area { display: flex; align-items: center; gap: 10px; cursor: pointer; flex-shrink: 0; }
@@ -130,7 +112,6 @@
         .nav-link.active { background: var(--gold); color: var(--primary); font-weight: 600; }
         .header-right { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
         .user-badge { display: flex; align-items: center; gap: 8px; cursor: pointer; padding: 6px 14px 6px 6px; border-radius: 24px; background: rgba(255,255,255,0.1); position: relative; min-height: 44px; }
-        .user-badge:hover { background: rgba(255,255,255,0.15); }
         .user-avatar { width: 34px; height: 34px; border-radius: 50%; overflow: hidden; background-size: cover; background-position: center; }
         .user-avatar.initials-avatar { display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.8rem; color: #fff; }
         .user-name { color: #fff; font-size: 0.88rem; font-weight: 500; }
@@ -141,7 +122,6 @@
         .dropdown-item.danger { color: var(--red); }
         .auth-btn { padding: 10px 20px; background: var(--gold); color: var(--primary); border: none; border-radius: 10px; font-size: 0.88rem; font-weight: 600; font-family: inherit; cursor: pointer; white-space: nowrap; min-height: 44px; }
 
-        /* HERO */
         .hero { background: linear-gradient(135deg, var(--primary), #1e3566 50%, var(--primary-light)); padding: 40px 16px; text-align: center; }
         .hero-content { max-width: 480px; margin: 0 auto; }
         .hero h1 { font-family: 'Montserrat', sans-serif; font-size: 1.6rem; font-weight: 700; color: #fff; margin-bottom: 10px; }
@@ -152,7 +132,6 @@
         .hero-stat-num { font-family: 'Montserrat', sans-serif; font-size: 1.5rem; font-weight: 700; color: var(--gold); }
         .hero-stat-label { color: rgba(255,255,255,0.5); font-size: 0.75rem; margin-top: 4px; }
 
-        /* SONGS CONTROLS */
         .controls-section { margin: -20px auto 0; padding: 0 12px; position: relative; z-index: 10; max-width: 600px; }
         .controls-card { background: var(--card-bg); border-radius: var(--radius); box-shadow: var(--shadow-lg); padding: 16px; }
         .search-row { display: flex; gap: 8px; margin-bottom: 10px; }
@@ -161,16 +140,19 @@
         .search-input { width: 100%; padding: 12px 12px 12px 42px; border: 2px solid #e8e4dc; border-radius: 12px; font-size: 0.9rem; font-family: inherit; background: var(--bg); outline: none; min-height: 44px; }
         .search-input:focus { border-color: var(--gold); }
         .sort-select { padding: 12px 36px 12px 14px; border: 2px solid #e8e4dc; border-radius: 12px; font-size: 0.85rem; background: var(--bg); cursor: pointer; min-height: 44px; }
-        .filter-tags { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 4px; }
+        .filter-tags { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 4px; flex-wrap: wrap; }
         .filter-tag { padding: 10px 18px; border-radius: 24px; border: 2px solid #e8e4dc; background: transparent; font-size: 0.85rem; cursor: pointer; white-space: nowrap; min-height: 44px; }
         .filter-tag.active { background: var(--gold); border-color: var(--gold); color: var(--primary); font-weight: 600; }
+        .filter-tag.sunday-tag { border-color: var(--sunday); color: var(--sunday); }
+        .filter-tag.sunday-tag.active { background: var(--sunday); border-color: var(--sunday); color: white; }
         .results-count { font-size: 0.8rem; color: var(--text-lighter); margin-top: 12px; padding-top: 12px; border-top: 1px solid #eee; }
 
-        /* SONGS GRID */
         .songs-section { margin: 20px auto; padding: 0 12px; max-width: 600px; }
         .songs-grid { display: grid; grid-template-columns: 1fr; gap: 14px; }
         .song-card { background: var(--card-bg); border-radius: var(--radius); box-shadow: var(--shadow); overflow: hidden; cursor: pointer; position: relative; }
-        .song-card-header { background: linear-gradient(135deg, var(--primary), var(--primary-light)); padding: 16px; }
+        .song-card.sunday-marked { border: 2px solid var(--sunday); }
+        .song-card-header { background: linear-gradient(135deg, var(--primary), var(--primary-light)); padding: 16px; position: relative; }
+        .sunday-badge { position: absolute; top: 8px; right: 8px; background: var(--sunday); color: white; padding: 4px 10px; border-radius: 20px; font-size: 0.65rem; font-weight: 600; display: flex; align-items: center; gap: 4px; }
         .song-number-badge { display: inline-block; padding: 3px 12px; background: var(--gold); color: var(--primary); border-radius: 20px; font-size: 0.7rem; font-weight: 700; margin-bottom: 8px; }
         .song-category-badge { display: inline-block; padding: 3px 10px; background: rgba(255,255,255,0.2); color: var(--gold-light); border-radius: 20px; font-size: 0.68rem; margin-left: 6px; }
         .song-card-title { font-family: 'Montserrat', sans-serif; font-size: 1.05rem; font-weight: 700; color: #fff; }
@@ -179,13 +161,13 @@
         .song-card-footer { display: flex; justify-content: space-between; align-items: center; padding: 8px 16px; border-top: 1px solid #f0ece4; }
         .song-date { font-size: 0.72rem; color: var(--text-lighter); }
         .song-actions { display: flex; gap: 12px; align-items: center; }
-        .favorite-btn { background: none; border: none; font-size: 1.4rem; cursor: pointer; padding: 4px 8px; border-radius: 30px; transition: 0.2s; min-width: 44px; line-height: 1; }
-        .favorite-btn.active { color: var(--gold-dark); text-shadow: 0 0 2px rgba(0,0,0,0.2); }
+        .favorite-btn, .sunday-btn { background: none; border: none; font-size: 1.2rem; cursor: pointer; padding: 4px 8px; border-radius: 30px; transition: 0.2s; min-width: 44px; line-height: 1; }
+        .favorite-btn.active { color: var(--gold-dark); }
+        .sunday-btn.active { color: var(--sunday); }
         .song-open-btn { padding: 8px 16px; background: var(--gold); color: var(--primary); border: none; border-radius: 10px; font-size: 0.82rem; font-weight: 600; cursor: pointer; min-height: 44px; }
-        .admin-actions { position: absolute; top: 8px; right: 8px; display: flex; gap: 4px; z-index: 10; }
+        .admin-actions { position: absolute; top: 8px; left: 8px; display: flex; gap: 4px; z-index: 10; }
         .admin-btn { background: rgba(0,0,0,0.6); border: none; border-radius: 8px; padding: 6px 10px; cursor: pointer; color: white; font-size: 0.7rem; min-width: 44px; min-height: 44px; }
 
-        /* PROFILE + FAVORITES PAGE */
         .profile-container { max-width: 600px; margin: 20px auto; padding: 0 12px; }
         .profile-card { background: var(--card-bg); border-radius: var(--radius); box-shadow: var(--shadow-lg); overflow: hidden; margin-bottom: 30px; }
         .profile-avatar-large { width: 90px; height: 90px; border-radius: 50%; margin: 20px auto 10px; cursor: pointer; border: 4px solid var(--gold-light); background-size: cover; background-position: center; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 2rem; color: #fff; }
@@ -193,29 +175,26 @@
         .profile-name-input { text-align: center; font-size: 1.2rem; font-weight: 600; margin-bottom: 8px; border: 2px solid #e8e4dc; border-radius: 30px; padding: 8px 16px; width: 100%; max-width: 280px; margin-left: auto; margin-right: auto; }
         .profile-email { color: var(--text-light); font-size: 0.8rem; margin-bottom: 16px; }
         .profile-success { text-align: center; padding: 10px; color: var(--green); font-weight: 600; display: none; }
-        .favorites-section { background: var(--card-bg); border-radius: var(--radius); box-shadow: var(--shadow); padding: 20px; }
-        .favorites-section h3 { font-family: 'Montserrat', sans-serif; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
-        .favorites-list { display: flex; flex-direction: column; gap: 12px; }
-        .favorite-item { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid #f0ece4; }
-        .favorite-item-info { cursor: pointer; flex: 1; }
-        .favorite-item-title { font-weight: 600; }
-        .favorite-item-meta { font-size: 0.7rem; color: var(--text-lighter); }
-        .remove-fav-btn { background: none; border: none; color: var(--red); font-size: 1.2rem; cursor: pointer; padding: 6px 12px; min-width: 44px; }
-        .empty-favorites { text-align: center; padding: 30px; color: var(--text-lighter); }
+        .favorites-section, .sunday-section { background: var(--card-bg); border-radius: var(--radius); box-shadow: var(--shadow); padding: 20px; margin-bottom: 20px; }
+        .favorites-section h3, .sunday-section h3 { font-family: 'Montserrat', sans-serif; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
+        .favorites-list, .sunday-list { display: flex; flex-direction: column; gap: 12px; }
+        .favorite-item, .sunday-item { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid #f0ece4; }
+        .favorite-item-info, .sunday-item-info { cursor: pointer; flex: 1; }
+        .favorite-item-title, .sunday-item-title { font-weight: 600; }
+        .favorite-item-meta, .sunday-item-meta { font-size: 0.7rem; color: var(--text-lighter); }
+        .remove-fav-btn, .remove-sunday-btn { background: none; border: none; color: var(--red); font-size: 1.2rem; cursor: pointer; padding: 6px 12px; min-width: 44px; }
+        .empty-favorites, .empty-sunday { text-align: center; padding: 30px; color: var(--text-lighter); }
 
-        /* ADMIN */
         .admin-section { margin: 20px auto; padding: 0 12px; max-width: 600px; }
         .admin-card { background: var(--card-bg); border-radius: var(--radius); box-shadow: var(--shadow-lg); padding: 20px; }
         .admin-card h2, .admin-card h3 { margin-bottom: 15px; font-family: 'Montserrat', sans-serif; }
-        .admin-song-item { display: flex; justify-content: space-between; align-items: center; padding: 12px; border-bottom: 1px solid #eee; gap: 10px; }
+        .admin-song-item { display: flex; justify-content: space-between; align-items: center; padding: 12px; border-bottom: 1px solid #eee; gap: 10px; flex-wrap: wrap; }
 
-        /* MODAL */
         .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.6); backdrop-filter: blur(8px); z-index: 1000; display: flex; align-items: center; justify-content: center; opacity: 0; visibility: hidden; transition: var(--transition); }
         .modal-overlay.active { opacity: 1; visibility: visible; }
         .modal { background: var(--card-bg); width: 100%; max-width: 600px; max-height: 90vh; overflow-y: auto; border-radius: 20px; }
         .modal-header { background: linear-gradient(135deg, var(--primary), var(--primary-light)); padding: 20px; position: sticky; top: 0; border-radius: 20px 20px 0 0; }
-        .modal-close { position: absolute; top: 10px; right: 10px; width: 44px; height: 44px; background: rgba(255,255,255,0.1); border: none; border-radius: 10px; cursor: pointer; }
-        .modal-close svg { width: 16px; height: 16px; stroke: #fff; }
+        .modal-close { position: absolute; top: 10px; right: 10px; width: 44px; height: 44px; background: rgba(255,255,255,0.1); border: none; border-radius: 10px; cursor: pointer; color: white; font-size: 1.2rem; }
         .modal-category { display: inline-block; padding: 3px 12px; background: rgba(201,168,76,0.25); color: var(--gold-light); border-radius: 20px; font-size: 0.68rem; margin-bottom: 8px; }
         .modal-title { font-family: 'Montserrat', sans-serif; font-size: 1.3rem; font-weight: 700; color: #fff; }
         .modal-number { color: rgba(255,255,255,0.5); font-size: 0.8rem; margin-top: 4px; }
@@ -232,12 +211,11 @@
         .form-btn.primary { background: var(--gold); color: var(--primary); }
         .form-btn.danger { background: var(--red); color: #fff; }
         .form-btn.info { background: var(--blue-accent); color: #fff; }
-        .form-btn.secondary { background: #e0e0e0; color: var(--text); }
+        .form-btn.sunday { background: var(--sunday); color: #fff; }
         .comments-section { padding: 0 20px 20px; }
         .comments-list { display: flex; flex-direction: column; gap: 12px; margin-bottom: 16px; max-height: 300px; overflow-y: auto; }
         .comment-item { display: flex; gap: 10px; padding: 12px; background: var(--bg); border-radius: 12px; }
 
-        /* BOTTOM NAV */
         .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: var(--card-bg); display: flex; align-items: center; justify-content: space-around; padding: 6px 8px; padding-bottom: calc(6px + var(--safe-bottom)); box-shadow: 0 -2px 16px rgba(0,0,0,0.08); z-index: 200; }
         .bottom-nav-item { display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 6px 12px; border-radius: 12px; cursor: pointer; border: none; background: none; color: var(--text-lighter); font-size: 0.65rem; font-weight: 500; min-width: 44px; min-height: 44px; }
         .bottom-nav-item svg { width: 22px; height: 22px; stroke: currentColor; fill: none; stroke-width: 2; }
@@ -270,100 +248,48 @@
 </head>
 <body>
 
-<div class="offline-indicator" id="offlineIndicator">
-    <span class="indicator-icon">📡</span>
-    <span class="indicator-text" id="offlineIndicatorText">Нет соединения</span>
-    <button class="retry-btn" id="offlineRetryBtn" style="display:none;">🔄</button>
-    <button class="close-indicator" id="closeIndicatorBtn" style="display:none;">✕</button>
-</div>
-
-<div id="loader">
-    <div class="loader-cross"></div>
-    <div class="loader-text"><span>Ж</span>ивое <span>С</span>лово</div>
-    <div class="loader-subtitle">ПЕСЕННИК</div>
-    <div class="loader-bar-container"><div class="loader-bar"></div></div>
-</div>
+<div class="offline-indicator" id="offlineIndicator"><span class="indicator-icon">📡</span><span id="offlineIndicatorText">Нет соединения</span><button class="retry-btn" id="offlineRetryBtn">🔄</button></div>
+<div id="loader"><div class="loader-cross"></div><div class="loader-text"><span>Ж</span>ивое <span>С</span>лово</div><div class="loader-bar-container"><div class="loader-bar"></div></div></div>
 
 <header>
     <div class="header-inner">
-        <div class="logo-area" onclick="scrollToTop()">
-            <svg viewBox="0 0 40 40" fill="none"><rect width="40" height="40" rx="10" fill="#c9a84c" fill-opacity="0.15"/><rect x="14" y="4" width="12" height="32" rx="3" fill="#c9a84c"/><rect x="6" y="12" width="28" height="12" rx="3" fill="#c9a84c"/></svg>
-            <div class="logo-text">Живое Слово</div>
-        </div>
+        <div class="logo-area" onclick="scrollToTop()"><svg viewBox="0 0 40 40"><rect width="40" height="40" rx="10" fill="#c9a84c" fill-opacity="0.15"/><rect x="14" y="4" width="12" height="32" rx="3" fill="#c9a84c"/><rect x="6" y="12" width="28" height="12" rx="3" fill="#c9a84c"/></svg><div class="logo-text">Живое Слово</div></div>
         <nav class="nav-desktop" id="navDesktop">
             <button class="nav-link active" onclick="switchPage('songs', this)">Песни</button>
-            <button class="nav-link" onclick="switchPage('profile', this)">Личный кабинет</button>
-            <button class="nav-link admin-only" id="navAdminBtn" onclick="switchPage('admin', this)" style="display:none;">Админ</button>
+            <button class="nav-link" onclick="switchPage('sunday', this)">📖 На воскресенье</button>
+            <button class="nav-link" onclick="switchPage('profile', this)">👤 Профиль</button>
+            <button class="nav-link admin-only" id="navAdminBtn" onclick="switchPage('admin', this)" style="display:none;">👑 Админ</button>
         </nav>
-        <div class="header-right" id="headerRight">
-            <button class="auth-btn" onclick="openAuthModal()">Войти</button>
-        </div>
+        <div class="header-right" id="headerRight"><button class="auth-btn" onclick="openAuthModal()">Войти</button></div>
     </div>
 </header>
 
-<section class="hero" id="heroSection">
-    <div class="hero-content">
-        <h1>Пойте <span>Господу</span> песнь новую</h1>
-        <p>Собрание христианских песен для молодёжи</p>
-        <div class="hero-stats">
-            <div class="hero-stat"><div class="hero-stat-num" id="statSongs">0</div><div class="hero-stat-label">Песен</div></div>
-            <div class="hero-stat"><div class="hero-stat-num" id="statCategories">5</div><div class="hero-stat-label">Категорий</div></div>
-            <div class="hero-stat"><div class="hero-stat-num" id="statUsers">0</div><div class="hero-stat-label">Участников</div></div>
-        </div>
-    </div>
-</section>
+<section class="hero" id="heroSection"><div class="hero-content"><h1>Пойте <span>Господу</span> песнь новую</h1><p>Собрание христианских песен для молодёжи</p><div class="hero-stats"><div class="hero-stat"><div class="hero-stat-num" id="statSongs">0</div><div class="hero-stat-label">Песен</div></div><div class="hero-stat"><div class="hero-stat-num" id="statCategories">5</div><div class="hero-stat-label">Категорий</div></div><div class="hero-stat"><div class="hero-stat-num" id="statUsers">0</div><div class="hero-stat-label">Участников</div></div></div></div></section>
 
 <div class="page active" id="page-songs">
-    <section class="controls-section">
-        <div class="controls-card">
-            <div class="search-row">
-                <div class="search-input-wrap"><svg class="search-icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><input type="text" class="search-input" id="searchInput" placeholder="Поиск..." oninput="handleSearch()"></div>
-                <select class="sort-select" id="sortSelect" onchange="handleSort()"><option value="number-asc">По номеру (возр.)</option><option value="number-desc">По номеру (убыв.)</option><option value="title-asc">По названию (А–Я)</option></select>
-            </div>
-            <div class="filter-tags" id="filterTags"></div>
-            <div class="results-count" id="resultsCount"></div>
-        </div>
-    </section>
+    <section class="controls-section"><div class="controls-card"><div class="search-row"><div class="search-input-wrap"><svg class="search-icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><input type="text" class="search-input" id="searchInput" placeholder="Поиск..." oninput="handleSearch()"></div><select class="sort-select" id="sortSelect" onchange="handleSort()"><option value="number-asc">По номеру (возр.)</option><option value="number-desc">По номеру (убыв.)</option><option value="title-asc">По названию (А–Я)</option></select></div><div class="filter-tags" id="filterTags"></div><div class="results-count" id="resultsCount"></div></div></section>
     <section class="songs-section"><div class="songs-grid" id="songsGrid"></div></section>
 </div>
 
+<div class="page" id="page-sunday">
+    <div class="profile-container"><div class="sunday-section"><h3>📖 Песни на воскресенье</h3><div id="sundayList" class="sunday-list">Загрузка...</div></div></div>
+</div>
+
 <div class="page" id="page-profile">
-    <div class="profile-container">
-        <div class="profile-card">
-            <div class="profile-avatar-large" id="profileAvatarLarge" onclick="document.getElementById('avatarInput').click()"></div>
-            <div class="profile-info">
-                <input type="text" id="profileNameInput" class="profile-name-input" placeholder="Ваше имя">
-                <div class="profile-email" id="profileEmailDisplay"></div>
-                <div class="profile-success" id="profileSuccessMsg">✅ Сохранено</div>
-                <button class="form-btn primary" onclick="saveProfileChanges()" style="margin-top: 8px;">Сохранить</button>
-            </div>
-        </div>
-        <div class="favorites-section">
-            <h3>❤️ Избранные песни</h3>
-            <div id="favoritesList" class="favorites-list">Загрузка...</div>
-        </div>
-    </div>
+    <div class="profile-container"><div class="profile-card"><div class="profile-avatar-large" id="profileAvatarLarge" onclick="document.getElementById('avatarInput').click()"></div><div class="profile-info"><input type="text" id="profileNameInput" class="profile-name-input" placeholder="Ваше имя"><div class="profile-email" id="profileEmailDisplay"></div><div class="profile-success" id="profileSuccessMsg">✅ Сохранено</div><button class="form-btn primary" onclick="saveProfileChanges()">Сохранить</button></div></div><div class="favorites-section"><h3>❤️ Избранные песни</h3><div id="favoritesList" class="favorites-list">Загрузка...</div></div></div>
 </div>
 
 <div class="page" id="page-admin">
-    <section class="admin-section">
-        <div class="admin-card">
-            <h2>👑 Административная панель</h2>
-            <div style="margin-bottom:30px;">
-                <h3>➕ Добавить песню</h3>
-                <div class="form-group"><input type="number" id="adminNumber" class="form-input" placeholder="Номер"><input type="text" id="adminTitle" class="form-input" placeholder="Название" style="margin-top:8px;"><select id="adminCategory" class="form-input" style="margin-top:8px;"></select><textarea id="adminLyrics" class="form-input" rows="4" placeholder="Текст" style="margin-top:8px;"></textarea><button class="form-btn primary" onclick="addSong()" style="width:100%; margin-top:8px;">➕ Добавить</button></div>
-            </div>
-            <div><h3>🎵 Управление песнями</h3><div id="adminSongsList">Загрузка...</div></div>
-        </div>
-    </section>
+    <section class="admin-section"><div class="admin-card"><h2>👑 Административная панель</h2><div style="margin-bottom:30px;"><h3>➕ Добавить песню</h3><div class="form-group"><input type="number" id="adminNumber" class="form-input" placeholder="Номер"><input type="text" id="adminTitle" class="form-input" placeholder="Название" style="margin-top:8px;"><select id="adminCategory" class="form-input" style="margin-top:8px;"></select><textarea id="adminLyrics" class="form-input" rows="4" placeholder="Текст" style="margin-top:8px;"></textarea><button class="form-btn primary" onclick="addSong()" style="width:100%; margin-top:8px;">➕ Добавить</button></div></div><div><h3>🎵 Управление песнями</h3><div id="adminSongsList">Загрузка...</div></div></div></section>
 </div>
 
-<div class="modal-overlay" id="songModal"><div class="modal" onclick="event.stopPropagation()"><div class="modal-header"><button class="modal-close" onclick="closeSongModal()"><svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button><div><div class="modal-category" id="modalCategory"></div><h2 class="modal-title" id="modalTitle"></h2><div class="modal-number" id="modalNumber"></div></div></div><div class="modal-body"><div class="modal-lyrics" id="modalLyrics"></div><div class="edit-form-container" id="editFormContainer"><h4>✏️ Редактировать</h4><div class="form-group"><label>Номер</label><input type="number" class="form-input" id="editNumber"></div><div class="form-group"><label>Название</label><input type="text" class="form-input" id="editTitle"></div><div class="form-group"><label>Категория</label><select class="form-input" id="editCategory"></select></div><div class="form-group"><label>Текст</label><textarea class="form-input" id="editLyrics" rows="6"></textarea></div><div style="display:flex;gap:8px;"><button class="form-btn primary" onclick="saveEditSong()">Сохранить</button><button class="form-btn secondary" onclick="cancelEditSong()">Отмена</button></div></div><div id="adminModalButtons" style="display:none;margin-top:12px;gap:8px;"><button class="form-btn info" onclick="showEditForm()">✏️ Редактировать</button><button class="form-btn danger" onclick="deleteCurrentSong()">🗑️ Удалить</button></div></div><div class="comments-section"><div class="comments-list" id="commentsList"></div><div id="commentFormArea"></div></div></div></div>
+<div class="modal-overlay" id="songModal"><div class="modal"><div class="modal-header"><button class="modal-close" onclick="closeSongModal()">✕</button><div><div class="modal-category" id="modalCategory"></div><h2 class="modal-title" id="modalTitle"></h2><div class="modal-number" id="modalNumber"></div></div></div><div class="modal-body"><div class="modal-lyrics" id="modalLyrics"></div><div class="edit-form-container" id="editFormContainer"><h4>✏️ Редактировать</h4><div class="form-group"><input type="number" class="form-input" id="editNumber" placeholder="Номер"></div><div class="form-group"><input type="text" class="form-input" id="editTitle" placeholder="Название"></div><div class="form-group"><select class="form-input" id="editCategory"></select></div><div class="form-group"><textarea class="form-input" id="editLyrics" rows="6" placeholder="Текст"></textarea></div><div style="display:flex;gap:8px;"><button class="form-btn primary" onclick="saveEditSong()">💾 Сохранить</button><button class="form-btn secondary" onclick="cancelEditSong()">Отмена</button></div></div><div id="adminModalButtons" style="display:none;margin-top:12px;gap:8px;"><button class="form-btn info" onclick="showEditForm()">✏️ Редактировать</button><button class="form-btn danger" onclick="deleteCurrentSong()">🗑️ Удалить</button><button class="form-btn sunday" id="modalSundayBtn" onclick="toggleSundayFromModal()">⭐ Отметить на воскресенье</button></div></div><div class="comments-section"><div class="comments-list" id="commentsList"></div><div id="commentFormArea"></div></div></div></div>
 
-<div class="modal-overlay" id="authModal"><div class="modal" style="max-width:440px;"><div class="modal-header"><button class="modal-close" onclick="closeAuthModal()"><svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button><h2 style="color:#fff;">Вход</h2></div><div style="padding:20px;"><div style="display:flex;border-bottom:2px solid #eee;margin-bottom:20px;"><button class="auth-tab-btn active" onclick="switchAuthTab('login')">Вход</button><button class="auth-tab-btn" onclick="switchAuthTab('register')">Регистрация</button></div><div id="loginForm"><div class="form-group"><input type="email" class="form-input" id="loginEmail" placeholder="Email"></div><div class="form-group"><input type="password" class="form-input" id="loginPassword" placeholder="Пароль"></div><button class="form-btn primary" onclick="login()" style="width:100%;">Войти</button></div><div id="registerForm" style="display:none;"><div class="form-group"><input type="text" class="form-input" id="regUsername" placeholder="Имя"></div><div class="form-group"><input type="email" class="form-input" id="regEmail" placeholder="Email"></div><div class="form-group"><input type="password" class="form-input" id="regPassword" placeholder="Пароль (мин.6)"></div><button class="form-btn primary" onclick="register()" style="width:100%;">Зарегистрироваться</button></div></div></div></div>
+<div class="modal-overlay" id="authModal"><div class="modal"><div class="modal-header"><button class="modal-close" onclick="closeAuthModal()">✕</button><h2 style="color:#fff;">Вход</h2></div><div style="padding:20px;"><div style="display:flex;border-bottom:2px solid #eee;margin-bottom:20px;"><button class="auth-tab-btn active" onclick="switchAuthTab('login')">Вход</button><button class="auth-tab-btn" onclick="switchAuthTab('register')">Регистрация</button></div><div id="loginForm"><div class="form-group"><input type="email" class="form-input" id="loginEmail" placeholder="Email"></div><div class="form-group"><input type="password" class="form-input" id="loginPassword" placeholder="Пароль"></div><button class="form-btn primary" onclick="login()" style="width:100%;">Войти</button></div><div id="registerForm" style="display:none;"><div class="form-group"><input type="text" class="form-input" id="regUsername" placeholder="Имя"></div><div class="form-group"><input type="email" class="form-input" id="regEmail" placeholder="Email"></div><div class="form-group"><input type="password" class="form-input" id="regPassword" placeholder="Пароль (мин.6)"></div><button class="form-btn primary" onclick="register()" style="width:100%;">Зарегистрироваться</button></div></div></div></div>
 
 <nav class="bottom-nav">
     <button class="bottom-nav-item active" onclick="switchPage('songs', this)" data-page="songs"><svg viewBox="0 0 24 24"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>Песни</button>
+    <button class="bottom-nav-item" onclick="switchPage('sunday', this)" data-page="sunday"><svg viewBox="0 0 24 24"><path d="M4 4h16v16H4z"/><path d="M12 8v8"/><path d="M8 12h8"/></svg>Воскресенье</button>
     <button class="bottom-nav-item" onclick="switchPage('profile', this)" data-page="profile"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>Профиль</button>
     <button class="bottom-nav-item admin-only" id="bottomAdminBtn" onclick="switchPage('admin', this)" data-page="admin" style="display:none;"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-2 2 2 2 0 01-2-2v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 01-2-2 2 2 0 012-2h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 010-2.83 2 2 0 012.83 0l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 012-2 2 2 0 012 2v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 0 2 2 0 010 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 012 2 2 2 0 01-2 2h-.09a1.65 1.65 0 00-1.51 1z"/></svg>Админ</button>
 </nav>
@@ -378,54 +304,67 @@
     const ADMIN_EMAILS = ["kpprevkponaog@gmail.com", "dinaprotsyuk@list.ru", "n@gmail.com"];
     let currentUser = null, isAdmin = false, currentSongId = null, currentFilter = 'all', currentSearch = '', currentSort = 'number-asc';
     let categories = ["Рождество","Пасха","Жатва","Троица","Свадьба","Семейные","Новый год","Прочее"];
-    let localSongsCache = [], userFavorites = new Set();
-    
+    let localSongsCache = [], userFavorites = new Set(), sundaySongsIds = new Set();
+
     function showToast(msg,type){const c=document.getElementById('toastContainer'),t=document.createElement('div');t.className='toast '+type;t.textContent=msg;c.appendChild(t);setTimeout(()=>t.remove(),3000);}
-    function getInitials(name){if(!name)return '??';return name.trim().split(/\s+/).map(w=>w[0]).join('').substring(0,2).toUpperCase();}
-    function getAvatarColor(name){const colors=['#c9a84c','#1a2a4a','#4a8c5c','#3a7bd5','#c0392b'];let hash=0;for(let i=0;i<(name||'User').length;i++)hash=((hash<<5)-hash)+name.charCodeAt(i);return colors[Math.abs(hash)%colors.length];}
-    function renderAvatar(name,size,photoURL){if(photoURL)return `<div style="background-image:url('${photoURL}');background-size:cover;width:${size};height:${size};border-radius:50%;"></div>`;const color=getAvatarColor(name),initials=getInitials(name);return `<div style="background:${color};width:${size};height:${size};border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:${parseInt(size)*0.35}px;color:#fff;">${initials}</div>`;}
     function escHtml(str){if(!str)return '';return String(str).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[m]);}
     function getUserName(){return currentUser?(currentUser.displayName||currentUser.email.split('@')[0]):'Гость';}
     function getUserPhoto(){return currentUser?currentUser.photoURL:null;}
+    
     async function cacheSongsLocally(){try{const snap=await db.collection('songs').get();const songs=snap.docs.map(d=>({id:d.id,...d.data()}));localStorage.setItem('cached_songs',JSON.stringify(songs));localSongsCache=songs;}catch(e){const cached=localStorage.getItem('cached_songs');if(cached)localSongsCache=JSON.parse(cached);}}
     function getCachedSongs(){const cached=localStorage.getItem('cached_songs');if(cached)localSongsCache=JSON.parse(cached);return localSongsCache;}
+    
+    async function loadSundaySongs(){try{const doc=await db.collection('settings').doc('sundaySongs').get();if(doc.exists)sundaySongsIds=new Set(doc.data().ids||[]);else sundaySongsIds.clear();}catch(e){sundaySongsIds.clear();}renderSongs();if(document.getElementById('page-sunday').classList.contains('active'))renderSundayPage();}
+    async function toggleSunday(songId){if(!isAdmin){showToast('Только администраторы могут отмечать песни на воскресенье','error');return;}if(sundaySongsIds.has(songId))sundaySongsIds.delete(songId);else sundaySongsIds.add(songId);await db.collection('settings').doc('sundaySongs').set({ids:Array.from(sundaySongsIds),updatedAt:Date.now()});renderSongs();if(document.getElementById('page-sunday').classList.contains('active'))renderSundayPage();showToast(sundaySongsIds.has(songId)?'Песня добавлена в воскресный плейлист':'Песня убрана из воскресного плейлиста','success');}
+    async function renderSundayPage(){if(!document.getElementById('page-sunday'))return;const container=document.getElementById('sundayList');const allSongs=getCachedSongs();const sundaySongs=allSongs.filter(s=>sundaySongsIds.has(s.id));if(sundaySongs.length===0){container.innerHTML='<div class="empty-sunday">Нет песен, отмеченных на воскресенье. Администраторы могут добавить их в админ-панели.</div>';return;}container.innerHTML=sundaySongs.map(s=>`<div class="sunday-item"><div class="sunday-item-info" onclick="openSongModal('${s.id}')"><div class="sunday-item-title">${escHtml(s.title)}</div><div class="sunday-item-meta">№${s.number} · ${s.category||''}</div></div>${isAdmin?`<button class="remove-sunday-btn" onclick="toggleSunday('${s.id}')">🗑️</button>`:''}</div>`).join('');}
+    
     async function loadCategories(){try{const doc=await db.collection('settings').doc('categories').get();if(doc.exists&&doc.data().list)categories=doc.data().list;else await db.collection('settings').doc('categories').set({list:categories});localStorage.setItem('cached_categories',JSON.stringify(categories));}catch(e){const cached=localStorage.getItem('cached_categories');if(cached)categories=JSON.parse(cached);}updateFilterTags();updateCategorySelects();}
-    function updateFilterTags(){const container=document.getElementById('filterTags');container.innerHTML='<button class="filter-tag active" onclick="filterByCategory(\'all\', this)">Все</button>'+categories.map(cat=>`<button class="filter-tag" onclick="filterByCategory('${cat}', this)">${cat}</button>`).join('');}
+    function updateFilterTags(){const container=document.getElementById('filterTags');container.innerHTML=`<button class="filter-tag active" onclick="filterByCategory('all', this)">Все</button><button class="filter-tag sunday-tag" onclick="filterByCategory('sunday', this)">📖 На воскресенье</button>`+categories.map(cat=>`<button class="filter-tag" onclick="filterByCategory('${cat}', this)">${cat}</button>`).join('');}
     function updateCategorySelects(){['adminCategory','editCategory'].forEach(id=>{const sel=document.getElementById(id);if(sel)sel.innerHTML='<option value="">Категория...</option>'+categories.map(c=>`<option value="${c}">${c}</option>`).join('');});}
-    function switchPage(page,btn){document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));document.getElementById('page-'+page).classList.add('active');document.querySelectorAll('.nav-desktop .nav-link').forEach(l=>l.classList.remove('active'));if(btn&&btn.classList.contains('nav-link'))btn.classList.add('active');document.querySelectorAll('.bottom-nav-item').forEach(item=>{item.classList.remove('active');if(item.getAttribute('data-page')===page)item.classList.add('active');});document.getElementById('heroSection').style.display=(page==='songs')?'':'none';window.scrollTo(0,0);if(page==='songs')renderSongs();if(page==='profile')loadProfilePage();if(page==='admin'&&isAdmin)loadAdminData();}
+    
+    function switchPage(page,btn){document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));document.getElementById('page-'+page).classList.add('active');document.querySelectorAll('.nav-desktop .nav-link').forEach(l=>l.classList.remove('active'));if(btn&&btn.classList.contains('nav-link'))btn.classList.add('active');document.querySelectorAll('.bottom-nav-item').forEach(item=>{item.classList.remove('active');if(item.getAttribute('data-page')===page)item.classList.add('active');});document.getElementById('heroSection').style.display=(page==='songs')?'':'none';window.scrollTo(0,0);if(page==='songs')renderSongs();if(page==='sunday')renderSundayPage();if(page==='profile')loadProfilePage();if(page==='admin'&&isAdmin)loadAdminData();}
     function scrollToTop(){window.scrollTo({top:0,behavior:'smooth'});}
-    async function loadSongs(){if(navigator.onLine){try{const snap=await db.collection('songs').get();if(snap.empty){const initial=[{id:"song_1",number:1,title:"Ты — мой Бог",category:"поклонение",date:"2025-09-15",preview:"Ты мой Бог...",lyrics:"Ты мой Бог..."},{id:"song_2",number:2,title:"Свят, свят, свят",category:"хвала",date:"2025-08-20",preview:"Свят...",lyrics:"Свят..."}];for(const s of initial)await db.collection('songs').doc(s.id).set(s);}await cacheSongsLocally();}catch(e){}renderSongs();}else renderSongs(true);}
-    async function renderSongs(useCache=false){let songs=useCache||!navigator.onLine?getCachedSongs():[];if(!useCache&&navigator.onLine)try{let q=db.collection('songs');if(currentFilter!=='all')q=q.where('category','==',currentFilter);const snap=await q.get();songs=snap.docs.map(d=>({id:d.id,...d.data()}));await cacheSongsLocally();}catch(e){songs=getCachedSongs();}if(currentSearch){const s=currentSearch.toLowerCase();songs=songs.filter(x=>(x.title||'').toLowerCase().includes(s)||String(x.number||'').includes(s));}const[key,dir]=currentSort.split('-');songs.sort((a,b)=>{if(key==='number'){let va=a.number||9999,vb=b.number||9999;return(va<vb?-1:1)*(dir==='asc'?1:-1);}else{let va=(a.title||'').toLowerCase(),vb=(b.title||'').toLowerCase();return(va<vb?-1:1)*(dir==='asc'?1:-1);}});const grid=document.getElementById('songsGrid');grid.innerHTML=songs.length===0?'<p style="text-align:center;padding:40px;">Нет песен</p>':songs.map(s=>{const isFav=currentUser&&userFavorites.has(s.id);return`<div class="song-card">${isAdmin?`<div class="admin-actions"><button class="admin-btn" onclick="event.stopPropagation();openSongModal('${s.id}');setTimeout(showEditForm,300);">✏️</button><button class="admin-btn" onclick="event.stopPropagation();deleteSong('${s.id}')">🗑️</button></div>`:''}<div class="song-card-header" onclick="openSongModal('${s.id}')"><div><span class="song-number-badge">№ ${s.number||'?'}</span><span class="song-category-badge">${escHtml(s.category||'')}</span></div><div class="song-card-title">${escHtml(s.title||'')}</div></div><div class="song-card-body" onclick="openSongModal('${s.id}')"><div class="song-preview">${escHtml(s.preview||(s.lyrics||'').substring(0,100))}</div></div><div class="song-card-footer"><span class="song-date">${s.date||''}</span><div class="song-actions"><button class="favorite-btn ${isFav?'active':''}" onclick="event.stopPropagation();toggleFavorite('${s.id}')">${isFav?'❤️':'🤍'}</button><button class="song-open-btn" onclick="event.stopPropagation();openSongModal('${s.id}')">Открыть</button></div></div></div>`;}).join('');document.getElementById('resultsCount').innerHTML='Найдено <strong>'+songs.length+'</strong> песен';document.getElementById('statSongs').textContent=songs.length;document.getElementById('statCategories').textContent=categories.length;}
+    
+    async function loadSongs(){if(navigator.onLine){try{const snap=await db.collection('songs').get();if(snap.empty){const initial=[{id:"song_1",number:1,title:"Ты — мой Бог",category:"поклонение",date:"2025-09-15",preview:"Ты мой Бог...",lyrics:"Ты мой Бог, я прославляю Тебя..."},{id:"song_2",number:2,title:"Свят, свят, свят",category:"хвала",date:"2025-08-20",preview:"Свят...",lyrics:"Свят, свят, свят — Господь Вседержитель..."}];for(const s of initial)await db.collection('songs').doc(s.id).set(s);}await cacheSongsLocally();}catch(e){}renderSongs();}else renderSongs(true);}
+    
+    async function renderSongs(useCache=false){let songs=useCache||!navigator.onLine?getCachedSongs():[];if(!useCache&&navigator.onLine)try{let q=db.collection('songs');if(currentFilter!=='all' && currentFilter!=='sunday')q=q.where('category','==',currentFilter);const snap=await q.get();songs=snap.docs.map(d=>({id:d.id,...d.data()}));await cacheSongsLocally();}catch(e){songs=getCachedSongs();}if(currentFilter==='sunday')songs=songs.filter(s=>sundaySongsIds.has(s.id));if(currentSearch){const s=currentSearch.toLowerCase();songs=songs.filter(x=>(x.title||'').toLowerCase().includes(s)||String(x.number||'').includes(s));}const[key,dir]=currentSort.split('-');songs.sort((a,b)=>{if(key==='number'){let va=a.number||9999,vb=b.number||9999;return(va<vb?-1:1)*(dir==='asc'?1:-1);}else{let va=(a.title||'').toLowerCase(),vb=(b.title||'').toLowerCase();return(va<vb?-1:1)*(dir==='asc'?1:-1);}});const grid=document.getElementById('songsGrid');grid.innerHTML=songs.length===0?'<p style="text-align:center;padding:40px;">Нет песен</p>':songs.map(s=>{const isFav=currentUser&&userFavorites.has(s.id);const isSunday=sundaySongsIds.has(s.id);return`<div class="song-card ${isSunday?'sunday-marked':''}">${isAdmin?`<div class="admin-actions"><button class="admin-btn" onclick="event.stopPropagation();openSongModal('${s.id}');setTimeout(showEditForm,300);">✏️</button><button class="admin-btn" onclick="event.stopPropagation();deleteSong('${s.id}')">🗑️</button></div>`:''}<div class="song-card-header" onclick="openSongModal('${s.id}')"><div><span class="song-number-badge">№ ${s.number||'?'}</span><span class="song-category-badge">${escHtml(s.category||'')}</span></div><div class="song-card-title">${escHtml(s.title||'')}</div>${isSunday?'<div class="sunday-badge">📖 На воскресенье</div>':''}</div><div class="song-card-body" onclick="openSongModal('${s.id}')"><div class="song-preview">${escHtml(s.preview||(s.lyrics||'').substring(0,100))}</div></div><div class="song-card-footer"><span class="song-date">${s.date||''}</span><div class="song-actions"><button class="favorite-btn ${isFav?'active':''}" onclick="event.stopPropagation();toggleFavorite('${s.id}')">${isFav?'❤️':'🤍'}</button>${isAdmin?`<button class="sunday-btn ${isSunday?'active':''}" onclick="event.stopPropagation();toggleSunday('${s.id}')">${isSunday?'📖':'⭐'}</button>`:''}<button class="song-open-btn" onclick="event.stopPropagation();openSongModal('${s.id}')">Открыть</button></div></div></div>`;}).join('');document.getElementById('resultsCount').innerHTML='Найдено <strong>'+songs.length+'</strong> песен';document.getElementById('statSongs').textContent=songs.length;}
+    
     async function toggleFavorite(songId){if(!currentUser){openAuthModal();return;}const userRef=db.collection('users').doc(currentUser.uid);const doc=await userRef.get();let favs=doc.exists?doc.data().favorites||[]:[];if(favs.includes(songId))favs=favs.filter(id=>id!==songId);else favs.push(songId);await userRef.set({favorites:favs},{merge:true});userFavorites=new Set(favs);renderSongs();showToast(favs.includes(songId)?'Добавлено в избранное':'Удалено из избранного','success');}
-    async function loadProfilePage(){if(!currentUser){document.getElementById('page-profile').innerHTML='<div class="profile-container" style="text-align:center;padding:40px;"><p>Войдите, чтобы увидеть профиль</p><button class="auth-btn" onclick="openAuthModal()">Войти</button></div>';return;}document.getElementById('profileNameInput').value=getUserName();document.getElementById('profileEmailDisplay').textContent=currentUser.email||'';const avatarDiv=document.getElementById('profileAvatarLarge');if(getUserPhoto())avatarDiv.style.backgroundImage=`url('${getUserPhoto()}')`;else{avatarDiv.style.background='';avatarDiv.style.backgroundColor=getAvatarColor(getUserName());avatarDiv.textContent=getInitials(getUserName());}const userDoc=await db.collection('users').doc(currentUser.uid).get();let favorites=userDoc.exists?userDoc.data().favorites||[]:[];userFavorites=new Set(favorites);const favContainer=document.getElementById('favoritesList');if(favorites.length===0){favContainer.innerHTML='<div class="empty-favorites">Нет избранных песен. Добавьте песни ❤️</div>';return;}const allSongs=getCachedSongs();const favSongs=allSongs.filter(s=>favorites.includes(s.id));favContainer.innerHTML=favSongs.map(s=>`<div class="favorite-item"><div class="favorite-item-info" onclick="openSongModal('${s.id}')"><div class="favorite-item-title">${escHtml(s.title)}</div><div class="favorite-item-meta">№${s.number} · ${s.category||''}</div></div><button class="remove-fav-btn" onclick="toggleFavorite('${s.id}')">🗑️</button></div>`).join('');}
+    
+    async function loadProfilePage(){if(!currentUser){document.getElementById('page-profile').innerHTML='<div class="profile-container" style="text-align:center;padding:40px;"><p>Войдите, чтобы увидеть профиль</p><button class="auth-btn" onclick="openAuthModal()">Войти</button></div>';return;}document.getElementById('profileNameInput').value=getUserName();document.getElementById('profileEmailDisplay').textContent=currentUser.email||'';const avatarDiv=document.getElementById('profileAvatarLarge');if(getUserPhoto())avatarDiv.style.backgroundImage=`url('${getUserPhoto()}')`;else{avatarDiv.style.background='';avatarDiv.style.backgroundColor='#c9a84c';avatarDiv.textContent=getUserName().charAt(0).toUpperCase();}const userDoc=await db.collection('users').doc(currentUser.uid).get();let favorites=userDoc.exists?userDoc.data().favorites||[]:[];userFavorites=new Set(favorites);const favContainer=document.getElementById('favoritesList');if(favorites.length===0){favContainer.innerHTML='<div class="empty-favorites">Нет избранных песен. Добавьте песни ❤️</div>';return;}const allSongs=getCachedSongs();const favSongs=allSongs.filter(s=>favorites.includes(s.id));favContainer.innerHTML=favSongs.map(s=>`<div class="favorite-item"><div class="favorite-item-info" onclick="openSongModal('${s.id}')"><div class="favorite-item-title">${escHtml(s.title)}</div><div class="favorite-item-meta">№${s.number} · ${s.category||''}</div></div><button class="remove-fav-btn" onclick="toggleFavorite('${s.id}')">🗑️</button></div>`).join('');}
+    
     async function saveProfileChanges(){const newName=document.getElementById('profileNameInput').value.trim();if(!newName)return;await currentUser.updateProfile({displayName:newName});await db.collection('users').doc(currentUser.uid).set({username:newName},{merge:true});const msgDiv=document.getElementById('profileSuccessMsg');msgDiv.style.display='block';setTimeout(()=>msgDiv.style.display='none',2500);showToast('Имя обновлено','success');updateUI(currentUser);loadProfilePage();}
-    async function uploadAvatar(e){const file=e.target.files[0];if(!file||!currentUser)return;const ref=storage.ref().child('avatars/'+currentUser.uid);await ref.put(file);const url=await ref.getDownloadURL();await currentUser.updateProfile({photoURL:url});await db.collection('users').doc(currentUser.uid).set({photoURL:url},{merge:true});loadProfilePage();showToast('Аватар обновлён','success');e.target.value='';}
-    async function openSongModal(songId){let song=getCachedSongs().find(s=>s.id===songId);if(!song&&navigator.onLine){const doc=await db.collection('songs').doc(songId).get();if(doc.exists)song=doc.data();}if(!song)return;currentSongId=songId;document.getElementById('modalCategory').textContent=song.category||'';document.getElementById('modalTitle').textContent=song.title||'';document.getElementById('modalNumber').innerHTML=`№ ${song.number||'?'}`;document.getElementById('modalLyrics').innerHTML=(song.lyrics||'').replace(/\n/g,'<br>');document.getElementById('editFormContainer').classList.remove('active');document.getElementById('adminModalButtons').style.display=isAdmin?'flex':'none';document.getElementById('songModal').classList.add('active');document.body.style.overflow='hidden';if(navigator.onLine)await loadComments(songId);}
-    async function loadComments(songId){try{const snap=await db.collection('comments').where('songId','==',songId).orderBy('timestamp','desc').get();const comments=snap.docs.map(d=>({id:d.id,...d.data()}));document.getElementById('commentsList').innerHTML=comments.length===0?'<p style="text-align:center;padding:16px;">Нет комментариев</p>':comments.map(c=>`<div class="comment-item"><div>${renderAvatar(c.username||'User','34px')}</div><div><div><strong>${escHtml(c.username)}</strong> · ${new Date(c.timestamp).toLocaleDateString()}</div><div>${escHtml(c.text)}</div></div>${(currentUser&&(currentUser.uid===c.userId||isAdmin))?`<button onclick="deleteComment('${c.id}')" style="background:none;border:none;">✕</button>`:''}</div>`).join('');document.getElementById('commentFormArea').innerHTML=currentUser?`<input type="text" id="commentInput" class="form-input" placeholder="Комментарий..."><button class="form-btn primary" onclick="submitComment()" style="margin-top:8px;">Отправить</button>`:'<p><a onclick="closeSongModal();openAuthModal();" style="color:var(--gold-dark);cursor:pointer;">Войдите</a> чтобы комментировать</p>';}catch(e){}}
+    async function uploadAvatar(e){const file=e.target.files[0];if(!file||!currentUser)return;const ref=storage.ref().child('avatars/'+currentUser.uid);await ref.put(file);const url=await ref.getDownloadURL();await currentUser.updateProfile({photoURL:url});await db.collection('users').doc(currentUser.uid).set({photoURL:url},{merge:true});loadProfilePage();showToast('Аватар обновлён','success');}
+    
+    async function openSongModal(songId){let song=getCachedSongs().find(s=>s.id===songId);if(!song&&navigator.onLine){const doc=await db.collection('songs').doc(songId).get();if(doc.exists)song=doc.data();}if(!song)return;currentSongId=songId;document.getElementById('modalCategory').textContent=song.category||'';document.getElementById('modalTitle').textContent=song.title||'';document.getElementById('modalNumber').innerHTML=`№ ${song.number||'?'}`;document.getElementById('modalLyrics').innerHTML=(song.lyrics||'').replace(/\n/g,'<br>');document.getElementById('editFormContainer').classList.remove('active');const adminBtns=document.getElementById('adminModalButtons');adminBtns.style.display=isAdmin?'flex':'none';const sundayBtn=document.getElementById('modalSundayBtn');if(sundayBtn)sundayBtn.textContent=sundaySongsIds.has(songId)?'📖 Убрать с воскресенья':'⭐ Отметить на воскресенье';document.getElementById('songModal').classList.add('active');document.body.style.overflow='hidden';}
+    function toggleSundayFromModal(){if(currentSongId){toggleSunday(currentSongId);const btn=document.getElementById('modalSundayBtn');if(btn)btn.textContent=sundaySongsIds.has(currentSongId)?'📖 Убрать с воскресенья':'⭐ Отметить на воскресенье';}}
+    async function loadComments(songId){try{const snap=await db.collection('comments').where('songId','==',songId).orderBy('timestamp','desc').get();const comments=snap.docs.map(d=>({id:d.id,...d.data()}));document.getElementById('commentsList').innerHTML=comments.length===0?'<p style="text-align:center;padding:16px;">Нет комментариев</p>':comments.map(c=>`<div class="comment-item"><div><strong>${escHtml(c.username||'User')}</strong> · ${new Date(c.timestamp).toLocaleDateString()}</div><div>${escHtml(c.text)}</div>${(currentUser&&(currentUser.uid===c.userId||isAdmin))?`<button onclick="deleteComment('${c.id}')">✕</button>`:''}</div>`).join('');document.getElementById('commentFormArea').innerHTML=currentUser?`<input type="text" id="commentInput" class="form-input" placeholder="Комментарий..."><button class="form-btn primary" onclick="submitComment()" style="margin-top:8px;">Отправить</button>`:'<p><a onclick="closeSongModal();openAuthModal();" style="color:var(--gold-dark);cursor:pointer;">Войдите</a> чтобы комментировать</p>';}catch(e){}}
     async function submitComment(){if(!navigator.onLine)return;const input=document.getElementById('commentInput');if(!input||!currentUser||!currentSongId)return;const text=input.value.trim();if(!text)return;await db.collection('comments').add({songId:currentSongId,userId:currentUser.uid,username:getUserName(),text,timestamp:Date.now()});input.value='';await loadComments(currentSongId);}
-    async function deleteComment(id){await db.collection('comments').doc(id).delete();await loadComments(currentSongId);}
+    async function deleteComment(id){await db.collection('comments').doc(id).delete();if(currentSongId)await loadComments(currentSongId);}
     function showEditForm(){document.getElementById('editFormContainer').classList.add('active');const song=getCachedSongs().find(s=>s.id===currentSongId);document.getElementById('editNumber').value=song?.number||'';document.getElementById('editTitle').value=document.getElementById('modalTitle').textContent;document.getElementById('editCategory').value=document.getElementById('modalCategory').textContent;document.getElementById('editLyrics').value=document.getElementById('modalLyrics').innerHTML.replace(/<br>/g,'\n');updateCategorySelects();}
     function cancelEditSong(){document.getElementById('editFormContainer').classList.remove('active');}
     async function saveEditSong(){const number=parseInt(document.getElementById('editNumber').value);const title=document.getElementById('editTitle').value.trim();const category=document.getElementById('editCategory').value;const lyrics=document.getElementById('editLyrics').value.trim();if(isNaN(number)||!title||!lyrics||!category){showToast('Заполните поля','error');return;}await db.collection('songs').doc(currentSongId).update({number,title,category,lyrics,preview:lyrics.substring(0,100)});document.getElementById('modalTitle').textContent=title;document.getElementById('modalCategory').textContent=category;document.getElementById('modalNumber').innerHTML=`№ ${number}`;document.getElementById('modalLyrics').innerHTML=lyrics.replace(/\n/g,'<br>');document.getElementById('editFormContainer').classList.remove('active');showToast('Обновлено!','success');await cacheSongsLocally();renderSongs();}
     async function deleteCurrentSong(){if(confirm('Удалить?')){await deleteSong(currentSongId);closeSongModal();}}
-    async function deleteSong(id){await db.collection('songs').doc(id).delete();const snap=await db.collection('comments').where('songId','==',id).get();for(const d of snap.docs)await d.ref.delete();showToast('Удалено','success');await cacheSongsLocally();renderSongs();if(isAdmin)loadAdminData();}
+    async function deleteSong(id){await db.collection('songs').doc(id).delete();const snap=await db.collection('comments').where('songId','==',id).get();for(const d of snap.docs)await d.ref.delete();if(sundaySongsIds.has(id)){sundaySongsIds.delete(id);await db.collection('settings').doc('sundaySongs').set({ids:Array.from(sundaySongsIds)},{merge:true});}showToast('Удалено','success');await cacheSongsLocally();renderSongs();if(isAdmin)loadAdminData();}
     function closeSongModal(){document.getElementById('songModal').classList.remove('active');document.body.style.overflow='';currentSongId=null;}
     function filterByCategory(cat,btn){currentFilter=cat;document.querySelectorAll('.filter-tag').forEach(t=>t.classList.remove('active'));if(btn)btn.classList.add('active');renderSongs();}
     function handleSearch(){currentSearch=document.getElementById('searchInput').value;renderSongs();}
     function handleSort(){currentSort=document.getElementById('sortSelect').value;renderSongs();}
-    async function addSong(){const number=parseInt(document.getElementById('adminNumber').value);const title=document.getElementById('adminTitle').value.trim();const category=document.getElementById('adminCategory').value;const lyrics=document.getElementById('adminLyrics').value.trim();if(isNaN(number)||!title||!category||!lyrics){showToast('Заполните все поля','error');return;}const id='song_'+Date.now();await db.collection('songs').doc(id).set({id,number,title,category,date:new Date().toISOString().split('T')[0],preview:lyrics.substring(0,100),lyrics});document.getElementById('adminNumber').value='';document.getElementById('adminTitle').value='';document.getElementById('adminLyrics').value='';showToast('Песня добавлена!','success');await cacheSongsLocally();loadAdminData();renderSongs();}
-    async function loadAdminData(){const snap=await db.collection('songs').get();const songs=snap.docs.map(d=>({id:d.id,...d.data()}));document.getElementById('adminSongsList').innerHTML=songs.length===0?'<p>Нет песен</p>':songs.map(s=>`<div class="admin-song-item"><div><strong>№${s.number} - ${escHtml(s.title)}</strong><br><small>${s.category}</small></div><div><button class="form-btn info" onclick="openSongModal('${s.id}');setTimeout(showEditForm,300);">✏️</button><button class="form-btn danger" onclick="deleteSong('${s.id}')">🗑️</button></div></div>`).join('');}
+    async function addSong(){const number=parseInt(document.getElementById('adminNumber').value);const title=document.getElementById('adminTitle').value.trim();const category=document.getElementById('adminCategory').value;const lyrics=document.getElementById('adminLyrics').value.trim();if(isNaN(number)||!title||!category||!lyrics){showToast('Заполните поля','error');return;}const id='song_'+Date.now();await db.collection('songs').doc(id).set({id,number,title,category,date:new Date().toISOString().split('T')[0],preview:lyrics.substring(0,100),lyrics});document.getElementById('adminNumber').value='';document.getElementById('adminTitle').value='';document.getElementById('adminLyrics').value='';showToast('Песня добавлена!','success');await cacheSongsLocally();loadAdminData();renderSongs();}
+    async function loadAdminData(){const snap=await db.collection('songs').get();const songs=snap.docs.map(d=>({id:d.id,...d.data()}));document.getElementById('adminSongsList').innerHTML=songs.length===0?'<p>Нет песен</p>':songs.map(s=>`<div class="admin-song-item"><div><strong>№${s.number} - ${escHtml(s.title)}</strong><br><small>${s.category}</small></div><div><button class="form-btn info" onclick="openSongModal('${s.id}');setTimeout(showEditForm,300);">✏️</button><button class="form-btn sunday" onclick="toggleSunday('${s.id}')">${sundaySongsIds.has(s.id)?'📖 Убрать':'⭐ Отметить'}</button><button class="form-btn danger" onclick="deleteSong('${s.id}')">🗑️</button></div></div>`).join('');}
+    
     function openAuthModal(){document.getElementById('authModal').classList.add('active');document.body.style.overflow='hidden';switchAuthTab('login');}
     function closeAuthModal(){document.getElementById('authModal').classList.remove('active');document.body.style.overflow='';}
     function switchAuthTab(tab){const lf=document.getElementById('loginForm'),rf=document.getElementById('registerForm');const lt=document.getElementById('loginTabBtn'),rt=document.getElementById('registerTabBtn');if(tab==='login'){lf.style.display='block';rf.style.display='none';lt.classList.add('active');rt.classList.remove('active');}else{lf.style.display='none';rf.style.display='block';rt.classList.add('active');lt.classList.remove('active');}}
     async function login(){const email=document.getElementById('loginEmail').value.trim();const password=document.getElementById('loginPassword').value;if(!email||!password){showToast('Введите данные','error');return;}try{await auth.signInWithEmailAndPassword(email,password);closeAuthModal();showToast('Добро пожаловать!','success');}catch(e){showToast('Ошибка: '+e.message,'error');}}
     async function register(){const username=document.getElementById('regUsername').value.trim();const email=document.getElementById('regEmail').value.trim();const password=document.getElementById('regPassword').value;if(!username||!email||!password){showToast('Заполните поля','error');return;}if(password.length<6){showToast('Пароль мин. 6 символов','error');return;}try{const cred=await auth.createUserWithEmailAndPassword(email,password);await cred.user.updateProfile({displayName:username});await db.collection('users').doc(cred.user.uid).set({username,email,favorites:[],createdAt:Date.now()});closeAuthModal();showToast('Регистрация успешна!','success');}catch(e){showToast('Ошибка: '+e.message,'error');}}
-    function updateUI(user){currentUser=user;isAdmin=user?ADMIN_EMAILS.includes(user.email):false;document.querySelectorAll('.admin-only').forEach(el=>el.style.display=isAdmin?'':'none');const headerRight=document.getElementById('headerRight');if(user){const name=getUserName();headerRight.innerHTML=`<div class="user-badge" onclick="toggleDropdown()"><div class="user-avatar">${renderAvatar(name,'34px',getUserPhoto())}</div><span class="user-name">${escHtml(name)}${isAdmin?' 👑':''}</span></div><div class="user-dropdown" id="userDropdown"><button class="dropdown-item" onclick="openProfileModal()">👤 Профиль</button><button class="dropdown-item" onclick="switchPage('songs')">🎵 Песни</button><button class="dropdown-item" onclick="switchPage('profile')">⭐ Избранное</button>${isAdmin?'<button class="dropdown-item" onclick="switchPage(\'admin\')">👑 Админ</button>':''}<button class="dropdown-item danger" onclick="logout()">🚪 Выйти</button></div>`;}else{headerRight.innerHTML='<button class="auth-btn" onclick="openAuthModal()">Войти</button>';}db.collection('users').get().then(s=>document.getElementById('statUsers').textContent=s.size).catch(()=>{});}
-    function openProfileModal(){if(currentUser)switchPage('profile');}
+    function updateUI(user){currentUser=user;isAdmin=user?ADMIN_EMAILS.includes(user.email):false;document.querySelectorAll('.admin-only').forEach(el=>el.style.display=isAdmin?'':'none');const headerRight=document.getElementById('headerRight');if(user){headerRight.innerHTML=`<div class="user-badge" onclick="toggleDropdown()"><div class="user-avatar"></div><span class="user-name">${escHtml(getUserName())}${isAdmin?' 👑':''}</span></div><div class="user-dropdown" id="userDropdown"><button class="dropdown-item" onclick="switchPage('profile')">👤 Профиль</button><button class="dropdown-item" onclick="switchPage('songs')">🎵 Песни</button><button class="dropdown-item" onclick="switchPage('sunday')">📖 На воскресенье</button>${isAdmin?'<button class="dropdown-item" onclick="switchPage(\'admin\')">👑 Админ</button>':''}<button class="dropdown-item danger" onclick="logout()">🚪 Выйти</button></div>`;}else{headerRight.innerHTML='<button class="auth-btn" onclick="openAuthModal()">Войти</button>';}db.collection('users').get().then(s=>document.getElementById('statUsers').textContent=s.size).catch(()=>{});}
     function toggleDropdown(){document.getElementById('userDropdown').classList.toggle('show');}
     function logout(){auth.signOut();currentUser=null;isAdmin=false;switchPage('songs');showToast('Вы вышли','info');}
-    auth.onAuthStateChanged(user=>{updateUI(user);if(document.getElementById('page-songs').classList.contains('active'))renderSongs();if(document.getElementById('page-profile').classList.contains('active'))loadProfilePage();});
-    window.addEventListener('load',()=>{setTimeout(()=>document.getElementById('loader').classList.add('loaded'),1500);loadCategories();loadSongs();});
+    
+    auth.onAuthStateChanged(user=>{updateUI(user);if(document.getElementById('page-songs').classList.contains('active'))renderSongs();if(document.getElementById('page-profile').classList.contains('active'))loadProfilePage();if(document.getElementById('page-sunday').classList.contains('active'))renderSundayPage();});
+    window.addEventListener('load',()=>{setTimeout(()=>document.getElementById('loader').classList.add('loaded'),1500);loadCategories();loadSongs();loadSundaySongs();});
+    setInterval(()=>{if(navigator.onLine){document.getElementById('offlineIndicator').classList.remove('show');}else{document.getElementById('offlineIndicatorText').innerHTML='Нет соединения';document.getElementById('offlineIndicator').classList.add('show');}},3000);
 </script>
 </body>
 </html>
