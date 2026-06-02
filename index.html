@@ -39,7 +39,7 @@
         }
         .hidden { display: none !important; }
 
-        /* OFFLINE INDICATOR - FIXED */
+        /* OFFLINE INDICATOR - AUTO HIDE VERSION */
         .offline-indicator {
             position: fixed;
             top: 0;
@@ -48,18 +48,19 @@
             background: #c0392b;
             color: white;
             text-align: center;
-            padding: 10px 16px;
+            padding: 12px 16px;
             font-size: 0.85rem;
             font-weight: 500;
             z-index: 10000;
             transform: translateY(-100%);
             transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.15);
             backdrop-filter: blur(8px);
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 8px;
+            gap: 10px;
+            flex-wrap: wrap;
         }
         .offline-indicator.show {
             transform: translateY(0);
@@ -81,15 +82,32 @@
             background: rgba(255,255,255,0.2);
             border: none;
             color: white;
-            padding: 4px 12px;
-            border-radius: 20px;
+            padding: 5px 14px;
+            border-radius: 24px;
             font-size: 0.75rem;
             cursor: pointer;
             font-weight: 500;
             transition: background 0.2s;
         }
         .offline-indicator .retry-btn:hover {
-            background: rgba(255,255,255,0.3);
+            background: rgba(255,255,255,0.35);
+        }
+        .offline-indicator .close-indicator {
+            background: rgba(0,0,0,0.3);
+            border: none;
+            color: white;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.1rem;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s;
+        }
+        .offline-indicator .close-indicator:hover {
+            background: rgba(0,0,0,0.5);
         }
 
         /* LOADER */
@@ -161,9 +179,6 @@
         }
         .nav-link:hover { color: #fff; background: rgba(255,255,255,0.1); }
         .nav-link.active { background: var(--gold); color: var(--primary); font-weight: 600; }
-        
-        .mobile-menu-btn { display: none; background: none; border: none; cursor: pointer; padding: 8px; min-width: 44px; min-height: 44px; align-items: center; justify-content: center; }
-        .mobile-menu-btn svg { width: 24px; height: 24px; stroke: #fff; }
         
         .header-right { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
         
@@ -643,11 +658,12 @@
 </head>
 <body>
 
-<!-- OFFLINE INDICATOR - FIXED -->
+<!-- OFFLINE INDICATOR - AUTO HIDE VERSION -->
 <div class="offline-indicator" id="offlineIndicator">
     <span class="indicator-icon">📡</span>
     <span class="indicator-text" id="offlineIndicatorText">Нет соединения с интернетом</span>
     <button class="retry-btn" id="offlineRetryBtn" style="display:none;">🔄 Повторить</button>
+    <button class="close-indicator" id="closeIndicatorBtn" style="display:none;">✕</button>
 </div>
 
 <!-- LOADER -->
@@ -937,15 +953,7 @@
     const auth = firebase.auth();
     const storage = firebase.storage();
     
-    // Enable offline persistence for Firestore
-    db.enablePersistence({ synchronizeTabs: true })
-        .catch(err => {
-            if (err.code === 'failed-precondition') {
-                console.log('Multiple tabs open, persistence can only be enabled in one tab at a time.');
-            } else if (err.code === 'unimplemented') {
-                console.log('The current browser does not support all of the features required to enable persistence');
-            }
-        });
+    db.enablePersistence({ synchronizeTabs: true }).catch(err => console.log('Persistence error:', err));
     
     // ===== STATE =====
     const ADMIN_EMAILS = ["kpprevkponaog@gmail.com", "dinaprotsyuk@list.ru", "n@gmail.com"];
@@ -956,17 +964,20 @@
     let currentSearch = '';
     let currentSort = 'title-asc';
     let currentPmUser = null;
-    let categories = ["Рождество","Пасха","Жатва","Троица","Свадьба","Семейные","Новый год","Прочее" ];
-    let isOnline = navigator.onLine;
+    let categories = ["Рождество","Пасха","Жатва","Троица","Свадьба","Семейные","Новый год","Прочее"];
     let localSongsCache = [];
-    let syncInProgress = false;
+    let autoHideTimeout = null;
     
-    // ===== IMPROVED OFFLINE HANDLING =====
+    // ===== IMPROVED OFFLINE HANDLING WITH AUTO-HIDE =====
     const offlineIndicator = document.getElementById('offlineIndicator');
     const offlineIndicatorText = document.getElementById('offlineIndicatorText');
     const offlineRetryBtn = document.getElementById('offlineRetryBtn');
+    const closeIndicatorBtn = document.getElementById('closeIndicatorBtn');
     
-    function showOfflineIndicator(type, message, showRetry = false) {
+    function showOfflineIndicator(type, message, showRetry = false, autoHide = true) {
+        // Clear any pending auto-hide
+        if (autoHideTimeout) clearTimeout(autoHideTimeout);
+        
         offlineIndicator.classList.add('show');
         offlineIndicator.classList.remove('online', 'syncing');
         
@@ -977,105 +988,96 @@
             iconSpan.textContent = '📡';
             offlineIndicatorText.textContent = message || 'Нет соединения с интернетом. Данные из кеша.';
             offlineRetryBtn.style.display = showRetry ? 'flex' : 'none';
+            closeIndicatorBtn.style.display = 'flex';
+            // Offline indicator stays until connection returns or user closes
         } else if (type === 'online') {
             offlineIndicator.style.background = '#2c7a4d';
             iconSpan.textContent = '✅';
-            offlineIndicatorText.textContent = message || 'Интернет восстановлен. Данные синхронизируются...';
+            offlineIndicatorText.textContent = message || 'Интернет восстановлен!';
             offlineRetryBtn.style.display = 'none';
+            closeIndicatorBtn.style.display = 'flex';
             
-            // Auto-hide after 3 seconds for online success
-            setTimeout(() => {
-                if (navigator.onLine && offlineIndicator.classList.contains('show') && !syncInProgress) {
-                    offlineIndicator.classList.remove('show');
-                }
-            }, 3000);
+            if (autoHide) {
+                autoHideTimeout = setTimeout(() => {
+                    hideOfflineIndicator();
+                }, 3000);
+            }
         } else if (type === 'syncing') {
             offlineIndicator.style.background = '#d4a017';
             iconSpan.textContent = '🔄';
             offlineIndicatorText.textContent = message || 'Синхронизация данных...';
             offlineRetryBtn.style.display = 'none';
+            closeIndicatorBtn.style.display = 'none';
+            // Don't auto-hide syncing, it will be replaced by success message
         }
     }
     
     function hideOfflineIndicator() {
-        if (navigator.onLine && !syncInProgress) {
-            offlineIndicator.classList.remove('show');
-        }
+        if (autoHideTimeout) clearTimeout(autoHideTimeout);
+        offlineIndicator.classList.remove('show');
     }
+    
+    // Manual close (user can dismiss non-critical indicators)
+    closeIndicatorBtn.addEventListener('click', () => {
+        hideOfflineIndicator();
+    });
     
     // Manual retry
     offlineRetryBtn.addEventListener('click', () => {
         if (!navigator.onLine) {
-            showOfflineIndicator('offline', 'Нет соединения. Проверьте интернет.', true);
+            showOfflineIndicator('offline', 'Нет соединения. Проверьте интернет.', true, false);
         } else {
-            showOfflineIndicator('syncing', 'Повторная синхронизация...');
             syncDataAfterReconnect();
         }
     });
     
     async function syncDataAfterReconnect() {
         if (!navigator.onLine) return;
-        syncInProgress = true;
-        showOfflineIndicator('syncing', 'Синхронизация данных...');
+        showOfflineIndicator('syncing', 'Синхронизация данных...', false, false);
         
         try {
             await loadSongs();
             await cacheCategoriesLocally();
             await cacheSongsLocally();
             
-            // Reload current page data
             if (document.getElementById('page-songs').classList.contains('active')) {
                 renderSongs();
             }
-            if (document.getElementById('page-chat').classContains('active')) {
+            if (document.getElementById('page-chat').classList.contains('active')) {
                 initChat();
             }
             
-            showOfflineIndicator('online', '✅ Синхронизация завершена!');
-            setTimeout(() => {
-                if (navigator.onLine) {
-                    offlineIndicator.classList.remove('show');
-                }
-                syncInProgress = false;
-            }, 2000);
+            showOfflineIndicator('online', '✅ Данные синхронизированы!', false, true);
         } catch(e) {
             console.error('Sync error:', e);
-            showOfflineIndicator('offline', 'Ошибка синхронизации. Некоторые функции могут быть ограничены.', true);
-            syncInProgress = false;
+            showOfflineIndicator('offline', 'Ошибка синхронизации. Некоторые функции ограничены.', true, false);
         }
     }
     
     function updateOfflineStatus() {
         if (navigator.onLine) {
-            console.log('Back online, syncing...');
             syncDataAfterReconnect();
         } else {
-            showOfflineIndicator('offline', 'Нет соединения с интернетом. Песни доступны из кеша.', true);
+            showOfflineIndicator('offline', 'Нет соединения с интернетом. Песни доступны из кеша.', true, false);
         }
     }
     
     window.addEventListener('online', updateOfflineStatus);
     window.addEventListener('offline', () => {
-        showOfflineIndicator('offline', 'Нет соединения с интернетом. Песни доступны из кеша.', true);
+        showOfflineIndicator('offline', 'Нет соединения с интернетом. Песни доступны из кеша.', true, false);
     });
     
-    // Cache songs to localStorage for offline access
     async function cacheSongsLocally() {
         try {
             const snap = await db.collection('songs').get();
             const songs = snap.docs.map(d => ({id: d.id, ...d.data()}));
             localStorage.setItem('cached_songs', JSON.stringify(songs));
             localSongsCache = songs;
-            console.log('Songs cached locally:', songs.length);
             return songs;
         } catch(e) {
-            console.log('Failed to cache songs, using existing cache');
             const cached = localStorage.getItem('cached_songs');
-            if (cached) {
-                localSongsCache = JSON.parse(cached);
-                return localSongsCache;
-            }
-            return [];
+            if (cached) localSongsCache = JSON.parse(cached);
+            return localSongsCache;
         }
     }
     
@@ -1088,7 +1090,6 @@
         return [];
     }
     
-    // Cache categories
     async function cacheCategoriesLocally() {
         try {
             const doc = await db.collection('settings').doc('categories').get();
@@ -1098,9 +1099,7 @@
             }
         } catch(e) {
             const cached = localStorage.getItem('cached_categories');
-            if (cached) {
-                categories = JSON.parse(cached);
-            }
+            if (cached) categories = JSON.parse(cached);
         }
         updateFilterTags();
         updateCategorySelects();
@@ -1176,7 +1175,6 @@
             }
             localStorage.setItem('cached_categories', JSON.stringify(categories));
         } catch(e) {
-            console.log('Offline mode: using cached categories');
             const cached = localStorage.getItem('cached_categories');
             if (cached) categories = JSON.parse(cached);
         }
@@ -1236,9 +1234,9 @@
         if (dd && dd.classList.contains('show') && !e.target.closest('.user-badge')) {
             dd.classList.remove('show');
         }
-    }); 
+    });
     
-    // ===== SONGS with OFFLINE SUPPORT =====
+    // ===== SONGS =====
     async function loadSongs() {
         if (navigator.onLine) {
             try {
@@ -1256,9 +1254,8 @@
                 await cacheSongsLocally();
                 renderSongs();
             } catch(e) { 
-                console.error('Error loading from network:', e);
                 renderSongs(true);
-                showOfflineIndicator('offline', 'Ошибка сети. Используется кеш песен.', true);
+                showOfflineIndicator('offline', 'Ошибка сети. Используется кеш.', true, false);
             }
         } else {
             renderSongs(true);
@@ -1283,7 +1280,6 @@
                 songs = snap.docs.map(d => ({id: d.id, ...d.data()}));
                 await cacheSongsLocally();
             } catch(e) {
-                console.error('Error:', e);
                 songs = getCachedSongs();
             }
         }
@@ -1521,7 +1517,6 @@
             loadAdminData();
             renderSongs();
         } catch(e) { 
-            console.error('Error:', e);
             showToast('Ошибка при добавлении: ' + e.message, 'error'); 
         }
     }
@@ -1542,7 +1537,9 @@
     }
     
     async function loadCategoriesList() {
-        document.getElementById('categoriesList').innerHTML = categories.length === 0 ? '<p style="text-align:center;color:var(--text-lighter);">Нет категорий</p>' :
+        const container = document.getElementById('categoriesList');
+        if (!container) return;
+        container.innerHTML = categories.length === 0 ? '<p style="text-align:center;color:var(--text-lighter);">Нет категорий</p>' :
             categories.map((cat, i) => `
                 <div class="category-item" id="cat-item-${i}">
                     <div><strong>${cat.charAt(0).toUpperCase() + cat.slice(1)}</strong></div>
@@ -1559,34 +1556,6 @@
             `).join('');
     }
     
-    async function addCategory() {
-        const name = document.getElementById('newCategoryName').value.trim().toLowerCase();
-        if (!name) { 
-            showToast('Введите название', 'error'); 
-            return; 
-        }
-        if (categories.includes(name)) { 
-            showToast('Категория уже существует', 'error'); 
-            return; 
-        }
-        
-        try {
-            categories.push(name);
-            await saveCategories();
-            
-            updateFilterTags();
-            updateCategorySelects();
-            loadCategoriesList();
-            document.getElementById('newCategoryName').value = '';
-            document.getElementById('statCategories').textContent = categories.length;
-            
-            showToast('Категория "' + name + '" добавлена!', 'success');
-        } catch(e) {
-            console.error('Error:', e);
-            showToast('Ошибка при добавлении категории', 'error');
-        }
-    }
-    
     function showEditCategory(i) { document.getElementById('cat-edit-'+i).classList.add('active'); }
     function hideEditCategory(i) { document.getElementById('cat-edit-'+i).classList.remove('active'); }
     
@@ -1595,78 +1564,50 @@
         if (!nameInput) return;
         
         const name = nameInput.value.trim().toLowerCase();
-        if (!name) { 
-            showToast('Введите название', 'error'); 
-            return; 
-        }
-        if (categories.includes(name) && categories[i] !== name) { 
-            showToast('Категория уже существует', 'error'); 
-            return; 
-        }
+        if (!name) { showToast('Введите название', 'error'); return; }
+        if (categories.includes(name) && categories[i] !== name) { showToast('Категория уже существует', 'error'); return; }
         
         const oldName = categories[i];
+        categories[i] = name;
         
-        try {
-            categories[i] = name;
-            
-            if (navigator.onLine) {
+        if (navigator.onLine) {
+            try {
                 const batch = db.batch();
                 const snap = await db.collection('songs').where('category', '==', oldName).get();
-                if (!snap.empty) {
-                    snap.docs.forEach(doc => {
-                        batch.update(doc.ref, { category: name });
-                    });
-                    await batch.commit();
-                }
-            }
-            
-            await saveCategories();
-            updateFilterTags();
-            updateCategorySelects();
-            loadCategoriesList();
-            hideEditCategory(i);
-            await cacheSongsLocally();
-            renderSongs();
-            
-            showToast('Категория обновлена!', 'success');
-        } catch(e) { 
-            console.error('Error:', e);
-            showToast('Ошибка при обновлении категории', 'error');
+                snap.docs.forEach(doc => batch.update(doc.ref, { category: name }));
+                await batch.commit();
+            } catch(e) { console.error('Error updating songs:', e); }
         }
+        
+        await saveCategories();
+        updateFilterTags();
+        updateCategorySelects();
+        loadCategoriesList();
+        hideEditCategory(i);
+        await cacheSongsLocally();
+        renderSongs();
+        showToast('Категория обновлена!', 'success');
     }
     
     async function deleteCategory(i) {
         const cat = categories[i];
         if (!confirm(`Удалить "${cat}"?`)) return;
-        try {
-            if (navigator.onLine) {
+        
+        if (navigator.onLine) {
+            try {
                 const snap = await db.collection('songs').where('category','==',cat).get();
                 for (const d of snap.docs) await d.ref.update({category: ''});
-            }
-            categories.splice(i, 1);
-            await saveCategories();
-            updateFilterTags();
-            updateCategorySelects();
-            loadCategoriesList();
-            await cacheSongsLocally();
-            renderSongs();
-            document.getElementById('statCategories').textContent = categories.length;
-            showToast('Удалено','success');
-        } catch(e) { console.error('Error:', e); }
-    }
-    
-    async function saveCategories() {
-        try {
-            await db.collection('settings').doc('categories').set({
-                list: categories,
-                updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-            }, { merge: true });
-            localStorage.setItem('cached_categories', JSON.stringify(categories));
-            console.log('Categories saved successfully:', categories);
-        } catch(e) { 
-            console.error('Error saving categories:', e);
-            localStorage.setItem('cached_categories', JSON.stringify(categories));
+            } catch(e) { console.error('Error:', e); }
         }
+        categories.splice(i, 1);
+        await saveCategories();
+        updateFilterTags();
+        updateCategorySelects();
+        loadCategoriesList();
+        await cacheSongsLocally();
+        renderSongs();
+        document.getElementById('statCategories').textContent = categories.length;
+        showToast('Удалено','success');
     }
     
     // ===== PROFILE =====
@@ -1920,15 +1861,14 @@
     });
     
     window.addEventListener('load', () => {
-        setTimeout(() => document.getElementById('loader').classList.add('loaded'), 2000);
+        setTimeout(() => document.getElementById('loader').classList.add('loaded'), 1500);
         loadCategories();
         loadSongs();
-        // Initial offline status check
+        
         if (!navigator.onLine) {
-            showOfflineIndicator('offline', 'Нет соединения с интернетом. Песни доступны из кеша.', true);
+            showOfflineIndicator('offline', 'Нет соединения с интернетом. Песни доступны из кеша.', true, false);
         }
         
-        // Register Service Worker for caching
         if ('serviceWorker' in navigator) {
             navigator.serviceWorker.register('/sw.js').catch(err => console.log('SW registration failed:', err));
         }
@@ -1943,29 +1883,16 @@
 
 <!-- Service Worker -->
 <script>
-    // Create service worker file dynamically
     if ('serviceWorker' in navigator) {
         const swCode = `const CACHE_NAME = 'songbook-v1';
-const urlsToCache = [
-  '/',
-  '/index.html'
-];
-
+const urlsToCache = ['/', '/index.html'];
 self.addEventListener('install', event => {
-  event.waitUntil(
-    caches.open(CACHE_NAME)
-      .then(cache => cache.addAll(urlsToCache))
-  );
+  event.waitUntil(caches.open(CACHE_NAME).then(cache => cache.addAll(urlsToCache)));
 });
-
 self.addEventListener('fetch', event => {
-  event.respondWith(
-    caches.match(event.request)
-      .then(response => response || fetch(event.request))
-  );
+  event.respondWith(caches.match(event.request).then(response => response || fetch(event.request)));
 });`;
         
-        // Only create if not exists
         fetch('/sw.js').catch(() => {
             const blob = new Blob([swCode], {type: 'application/javascript'});
             const url = URL.createObjectURL(blob);
