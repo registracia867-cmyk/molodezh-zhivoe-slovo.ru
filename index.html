@@ -105,8 +105,8 @@
         .hero p { color: rgba(255,255,255,0.7); font-size: 0.9rem; margin-bottom: 24px; }
         .hero-stats { display: flex; justify-content: center; gap: 28px; margin-top: 24px; }
         .hero-stat { text-align: center; }
-        .hero-stat-num { font-family: 'Montserrat', sans-serif; font-size: 1.5rem; font-weight: 700; color: var(--gold); }
-        .hero-stat-label { color: rgba(255,255,255,0.5); font-size: 0.75rem; margin-top: 4px; }
+        .hero-stat-num { font-family: 'Montserrat', sans-serif; font-size: 2rem; font-weight: 700; color: var(--gold); }
+        .hero-stat-label { color: rgba(255,255,255,0.6); font-size: 0.8rem; margin-top: 4px; }
 
         .controls-section { margin: -20px auto 0; padding: 0 12px; position: relative; z-index: 10; max-width: 600px; }
         .controls-card { background: var(--card-bg); border-radius: var(--radius); box-shadow: var(--shadow-lg); padding: 16px; }
@@ -128,7 +128,6 @@
         .song-card { background: var(--card-bg); border-radius: var(--radius); box-shadow: var(--shadow); overflow: hidden; cursor: pointer; position: relative; }
         .song-card.sunday-marked { border: 2px solid var(--sunday); }
         
-        /* ИСПРАВЛЕНО: Заголовок карточки с отступом для иконок */
         .song-card-header { 
             background: linear-gradient(135deg, var(--primary), var(--primary-light)); 
             padding: 16px; 
@@ -136,7 +135,6 @@
             padding-top: 32px;
         }
         
-        /* ИСПРАВЛЕНО: Значок "На воскресенье" слева вверху */
         .sunday-badge { 
             position: absolute; 
             top: 8px; 
@@ -167,7 +165,6 @@
         .sunday-btn.active { color: var(--sunday); }
         .song-open-btn { padding: 8px 16px; background: var(--gold); color: var(--primary); border: none; border-radius: 10px; font-size: 0.82rem; font-weight: 600; cursor: pointer; min-height: 44px; }
         
-        /* ИСПРАВЛЕНО: Админские кнопки справа вверху */
         .admin-actions { 
             position: absolute; 
             top: 8px; 
@@ -291,7 +288,18 @@
     </div>
 </header>
 
-<section class="hero" id="heroSection"><div class="hero-content"><h1>Пойте <span>Господу</span> песнь новую</h1><p>Собрание христианских песен для молодёжи</p><div class="hero-stats"><div class="hero-stat"><div class="hero-stat-num" id="statSongs">0</div><div class="hero-stat-label">Песен</div></div><div class="hero-stat"><div class="hero-stat-num" id="statCategories">5</div><div class="hero-stat-label">Категорий</div></div><div class="hero-stat"><div class="hero-stat-num" id="statUsers">0</div><div class="hero-stat-label">Участников</div></div></div></div></section>
+<section class="hero" id="heroSection">
+    <div class="hero-content">
+        <h1>Пойте <span>Господу</span> песнь новую</h1>
+        <p>Собрание христианских песен для молодёжи</p>
+        <div class="hero-stats">
+            <div class="hero-stat">
+                <div class="hero-stat-num" id="statSongs">0</div>
+                <div class="hero-stat-label">Песен в сборнике</div>
+            </div>
+        </div>
+    </div>
+</section>
 
 <div class="page active" id="page-songs">
     <section class="controls-section"><div class="controls-card"><div class="search-row"><div class="search-input-wrap"><svg class="search-icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><input type="text" class="search-input" id="searchInput" placeholder="Поиск..." oninput="handleSearch()"></div><select class="sort-select" id="sortSelect" onchange="handleSort()"><option value="number-asc">По номеру (возр.)</option><option value="number-desc">По номеру (убыв.)</option><option value="title-asc">По названию (А–Я)</option></select></div><div class="filter-tags" id="filterTags"></div><div class="results-count" id="resultsCount"></div></div></section>
@@ -331,7 +339,6 @@
     const auth = firebase.auth();
     const storage = firebase.storage();
     
-    // Включаем оффлайн-режим
     db.enablePersistence({synchronizeTabs: true}).catch(() => {});
     
     const ADMIN_EMAILS = ["kpprevkponaog@gmail.com", "dinaprotsyuk@list.ru", "n@gmail.com"];
@@ -389,7 +396,6 @@
         return localSongsCache;
     }
 
-    // Загружаем воскресные песни через real-time listener
     async function loadSundaySongs() {
         if (unsubscribeSunday) {
             unsubscribeSunday();
@@ -429,7 +435,6 @@
         }
     }
 
-    // Добавление/удаление песни из воскресных
     async function toggleSunday(songId) {
         if (!isAdmin) {
             showToast('Только администраторы могут отмечать песни на воскресенье', 'error');
@@ -469,7 +474,6 @@
         }
     }
     
-    // Отображение воскресных песен
     async function renderSundayPage() {
         const container = document.getElementById('sundayList');
         
@@ -492,7 +496,6 @@
         `).join('');
     }
 
-    // Проверка, отмечена ли песня на воскресенье
     function isSundaySong(songId) {
         return sundaySongsData.some(s => s.songId === songId);
     }
@@ -1099,10 +1102,6 @@
         } else {
             headerRight.innerHTML = '<button class="auth-btn" onclick="openAuthModal()">Войти</button>';
         }
-        
-        db.collection('users').get().then(s => {
-            document.getElementById('statUsers').textContent = s.size;
-        }).catch(() => {});
     }
     
     function toggleDropdown() {
