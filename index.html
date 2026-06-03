@@ -127,11 +127,36 @@
         .songs-grid { display: grid; grid-template-columns: 1fr; gap: 14px; }
         .song-card { background: var(--card-bg); border-radius: var(--radius); box-shadow: var(--shadow); overflow: hidden; cursor: pointer; position: relative; }
         .song-card.sunday-marked { border: 2px solid var(--sunday); }
-        .song-card-header { background: linear-gradient(135deg, var(--primary), var(--primary-light)); padding: 16px; position: relative; }
-        .sunday-badge { position: absolute; top: 8px; right: 8px; background: var(--sunday); color: white; padding: 4px 10px; border-radius: 20px; font-size: 0.65rem; font-weight: 600; display: flex; align-items: center; gap: 4px; }
+        
+        /* ИСПРАВЛЕНО: Заголовок карточки с отступом для иконок */
+        .song-card-header { 
+            background: linear-gradient(135deg, var(--primary), var(--primary-light)); 
+            padding: 16px; 
+            position: relative; 
+            padding-top: 32px;
+        }
+        
+        /* ИСПРАВЛЕНО: Значок "На воскресенье" слева вверху */
+        .sunday-badge { 
+            position: absolute; 
+            top: 8px; 
+            left: 8px; 
+            background: var(--sunday); 
+            color: white; 
+            padding: 4px 10px; 
+            border-radius: 20px; 
+            font-size: 0.65rem; 
+            font-weight: 600; 
+            display: flex; 
+            align-items: center; 
+            gap: 4px; 
+            z-index: 5;
+            white-space: nowrap;
+        }
+        
         .song-number-badge { display: inline-block; padding: 3px 12px; background: var(--gold); color: var(--primary); border-radius: 20px; font-size: 0.7rem; font-weight: 700; margin-bottom: 8px; }
         .song-category-badge { display: inline-block; padding: 3px 10px; background: rgba(255,255,255,0.2); color: var(--gold-light); border-radius: 20px; font-size: 0.68rem; margin-left: 6px; }
-        .song-card-title { font-family: 'Montserrat', sans-serif; font-size: 1.05rem; font-weight: 700; color: #fff; }
+        .song-card-title { font-family: 'Montserrat', sans-serif; font-size: 1.05rem; font-weight: 700; color: #fff; word-break: break-word; }
         .song-card-body { padding: 14px 16px; }
         .song-preview { color: var(--text-light); font-size: 0.85rem; line-height: 1.6; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
         .song-card-footer { display: flex; justify-content: space-between; align-items: center; padding: 8px 16px; border-top: 1px solid #f0ece4; }
@@ -141,8 +166,34 @@
         .favorite-btn.active { color: var(--gold-dark); }
         .sunday-btn.active { color: var(--sunday); }
         .song-open-btn { padding: 8px 16px; background: var(--gold); color: var(--primary); border: none; border-radius: 10px; font-size: 0.82rem; font-weight: 600; cursor: pointer; min-height: 44px; }
-        .admin-actions { position: absolute; top: 8px; right: 8px; display: flex; gap: 6px; z-index: 15; background: rgba(0,0,0,0.5); border-radius: 30px; padding: 4px 6px; backdrop-filter: blur(4px); }
-        .admin-btn { background: rgba(0,0,0,0.7); border: none; border-radius: 20px; padding: 5px 10px; cursor: pointer; color: white; font-size: 0.7rem; min-width: 36px; min-height: 32px; transition: 0.2s; }
+        
+        /* ИСПРАВЛЕНО: Админские кнопки справа вверху */
+        .admin-actions { 
+            position: absolute; 
+            top: 8px; 
+            right: 8px; 
+            display: flex; 
+            gap: 4px; 
+            z-index: 10; 
+            background: rgba(0,0,0,0.6); 
+            border-radius: 20px; 
+            padding: 3px 5px; 
+            backdrop-filter: blur(4px); 
+        }
+        
+        .admin-btn { 
+            background: rgba(255,255,255,0.15); 
+            border: none; 
+            border-radius: 20px; 
+            padding: 4px 10px; 
+            cursor: pointer; 
+            color: white; 
+            font-size: 0.7rem; 
+            min-width: 32px; 
+            min-height: 28px; 
+            transition: 0.2s; 
+            white-space: nowrap;
+        }
         .admin-btn:hover { background: var(--gold); color: var(--primary); }
 
         .profile-container { max-width: 600px; margin: 20px auto; padding: 0 12px; }
@@ -170,8 +221,8 @@
         .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.6); backdrop-filter: blur(8px); z-index: 1000; display: flex; align-items: center; justify-content: center; opacity: 0; visibility: hidden; transition: var(--transition); }
         .modal-overlay.active { opacity: 1; visibility: visible; }
         .modal { background: var(--card-bg); width: 100%; max-width: 600px; max-height: 90vh; overflow-y: auto; border-radius: 20px; }
-        .modal-header { background: linear-gradient(135deg, var(--primary), var(--primary-light)); padding: 20px; position: sticky; top: 0; border-radius: 20px 20px 0 0; }
-        .modal-close { position: absolute; top: 10px; right: 10px; width: 44px; height: 44px; background: rgba(255,255,255,0.1); border: none; border-radius: 10px; cursor: pointer; color: white; font-size: 1.2rem; }
+        .modal-header { background: linear-gradient(135deg, var(--primary), var(--primary-light)); padding: 20px; position: sticky; top: 0; border-radius: 20px 20px 0 0; padding-right: 60px; }
+        .modal-close { position: absolute; top: 12px; right: 12px; width: 40px; height: 40px; background: rgba(255,255,255,0.1); border: none; border-radius: 10px; cursor: pointer; color: white; font-size: 1.2rem; display: flex; align-items: center; justify-content: center; }
         .modal-category { display: inline-block; padding: 3px 12px; background: rgba(201,168,76,0.25); color: var(--gold-light); border-radius: 20px; font-size: 0.68rem; margin-bottom: 8px; }
         .modal-title { font-family: 'Montserrat', sans-serif; font-size: 1.3rem; font-weight: 700; color: #fff; }
         .modal-number { color: rgba(255,255,255,0.5); font-size: 0.8rem; margin-top: 4px; }
@@ -395,11 +446,9 @@
             const existingDoc = await db.collection('sundaySongs').doc(songId).get();
             
             if (existingDoc.exists) {
-                // Удаляем песню из воскресных
                 await db.collection('sundaySongs').doc(songId).delete();
                 showToast('Песня убрана из воскресного плейлиста', 'success');
             } else {
-                // Добавляем песню в воскресные
                 await db.collection('sundaySongs').doc(songId).set({
                     songId: songId,
                     number: song.number || 0,
@@ -549,7 +598,6 @@
             }
         }
         
-        // Фильтрация для воскресных песен
         if (currentFilter === 'sunday') {
             const sundaySongIds = new Set(sundaySongsData.map(s => s.songId));
             songs = songs.filter(s => sundaySongIds.has(s.id));
@@ -585,12 +633,16 @@
                 return `
                 <div class="song-card ${isSunday ? 'sunday-marked' : ''}">
                     <div class="song-card-header" onclick="openSongModal('${s.id}')">
+                        ${isSunday ? '<div class="sunday-badge">📖 На воскресенье</div>' : ''}
+                        ${isAdmin ? `<div class="admin-actions">
+                            <button class="admin-btn" onclick="event.stopPropagation();openSongModal('${s.id}');setTimeout(showEditForm,300);">✏️</button>
+                            <button class="admin-btn" onclick="event.stopPropagation();deleteSong('${s.id}')">🗑️</button>
+                        </div>` : ''}
                         <div>
                             <span class="song-number-badge">№ ${s.number || '?'}</span>
                             <span class="song-category-badge">${escHtml(s.category || '')}</span>
                         </div>
                         <div class="song-card-title">${escHtml(s.title || '')}</div>
-                        ${isSunday ? '<div class="sunday-badge">📖 На воскресенье</div>' : ''}
                     </div>
                     <div class="song-card-body" onclick="openSongModal('${s.id}')">
                         <div class="song-preview">${escHtml(s.preview || (s.lyrics || '').substring(0, 100))}</div>
@@ -607,10 +659,6 @@
                             <button class="song-open-btn" onclick="event.stopPropagation();openSongModal('${s.id}')">Открыть</button>
                         </div>
                     </div>
-                    ${isAdmin ? `<div class="admin-actions">
-                        <button class="admin-btn" onclick="event.stopPropagation();openSongModal('${s.id}');setTimeout(showEditForm,300);">✏️</button>
-                        <button class="admin-btn" onclick="event.stopPropagation();deleteSong('${s.id}')">🗑️</button>
-                    </div>` : ''}
                 </div>`;
             }).join('');
         
@@ -866,7 +914,6 @@
         const snap = await db.collection('comments').where('songId', '==', id).get();
         for (const d of snap.docs) await d.ref.delete();
         
-        // Удаляем также из воскресных песен
         const sundayDoc = await db.collection('sundaySongs').doc(id).get();
         if (sundayDoc.exists) {
             await db.collection('sundaySongs').doc(id).delete();
@@ -1071,7 +1118,6 @@
         showToast('Вы вышли', 'info');
     }
 
-    // Закрываем дропдаун при клике вне его
     document.addEventListener('click', (e) => {
         if (!e.target.closest('.user-badge')) {
             const dropdown = document.getElementById('userDropdown');
@@ -1079,7 +1125,6 @@
         }
     });
 
-    // Инициализация при загрузке
     auth.onAuthStateChanged(user => {
         updateUI(user);
         if (document.getElementById('page-songs').classList.contains('active')) renderSongs();
@@ -1094,14 +1139,12 @@
         loadSundaySongs();
     });
     
-    // Очистка при уходе со страницы
     window.addEventListener('beforeunload', () => {
         if (unsubscribeSunday) {
             unsubscribeSunday();
         }
     });
     
-    // Обработчик оффлайн-статуса
     setInterval(() => {
         const indicator = document.getElementById('offlineIndicator');
         if (navigator.onLine) {
