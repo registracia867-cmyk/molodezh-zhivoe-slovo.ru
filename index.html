@@ -752,7 +752,7 @@
         const adminBtns = document.getElementById('adminModalButtons');
         adminBtns.style.display = isAdmin ? 'flex' : 'none';
         const sundayBtn = document.getElementById('modalSundayBtn');
-        if (sundayBtn) sundayBtn.textContent = isSundaySong(songId) ? '📖 Убрать с воскресенья' : '⭐ Отметить на воскресенье';
+        if (sundayBtn) sundayBtn.textContent = isSundaySong(songId) ? '📖' : '⭐';
         document.getElementById('songModal').classList.add('active');
         document.body.style.overflow = 'hidden';
         if (navigator.onLine) { loadComments(songId); loadSongStats(songId); }
