@@ -306,9 +306,9 @@
 <div class="page" id="page-admin"><section class="admin-section"><div class="admin-card">
     <h2>👑 Административная панель</h2>
     <div class="admin-tabs">
-        <button class="admin-tab active" onclick="switchAdminTab('add')">➕ Добавить</button>
-        <button class="admin-tab" onclick="switchAdminTab('manage')">🎵 Управление</button>
-        <button class="admin-tab" onclick="switchAdminTab('stats')">📊 Статистика</button>
+        <button class="admin-tab active" onclick="switchAdminTab('add')">➕</button>
+        <button class="admin-tab" onclick="switchAdminTab('manage')">🎵</button>
+        <button class="admin-tab" onclick="switchAdminTab('stats')">📊</button>
     </div>
     <div class="admin-tab-content active" id="adminTab-add">
         <h3>Добавить новую песню</h3>
@@ -336,7 +336,7 @@
     </div>
     <div class="modal-lyrics" id="modalLyrics"></div>
     <div class="edit-form-container" id="editFormContainer"><h4>✏️ Редактирование</h4><div class="form-group"><input type="number" class="form-input" id="editNumber" placeholder="Номер"></div><div class="form-group"><input type="text" class="form-input" id="editTitle" placeholder="Название"></div><div class="form-group"><select class="form-input" id="editCategory"></select></div><div class="form-group"><textarea class="form-input" id="editLyrics" rows="6" placeholder="Текст"></textarea></div><div style="display:flex;gap:8px;"><button class="form-btn primary" onclick="saveEditSong()">💾 Сохранить</button><button class="form-btn secondary" onclick="cancelEditSong()">Отмена</button></div></div>
-    <div id="adminModalButtons" style="display:none;margin-top:12px;gap:8px;"><button class="form-btn info" onclick="showEditForm()">✏️</button><button class="form-btn danger" onclick="deleteCurrentSong()">🗑️</button><button class="form-btn sunday" id="modalSundayBtn" onclick="toggleSundayFromModal()">⭐ Отметить</button><button class="form-btn info" onclick="markAsPerformed()">🎵 Исполнили</button></div>
+    <div id="adminModalButtons" style="display:none;margin-top:12px;gap:8px;"><button class="form-btn info" onclick="showEditForm()">✏️</button><button class="form-btn danger" onclick="deleteCurrentSong()">🗑️</button><button class="form-btn sunday" id="modalSundayBtn" onclick="toggleSundayFromModal()">⭐</button><button class="form-btn info" onclick="markAsPerformed()">🎵</button></div>
     <div id="songStats" style="margin-top:12px;padding:12px;background:var(--bg);border-radius:12px;"></div>
 </div><div class="comments-section"><div class="comments-list" id="commentsList"></div><div id="commentFormArea"></div></div></div></div>
 
