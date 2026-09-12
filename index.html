@@ -59,20 +59,6 @@
             padding-bottom: calc(var(--bottom-nav-height) + var(--safe-bottom));
             -webkit-tap-highlight-color: transparent;
         }
-        .admin-tabs {
-            display: flex; gap: 8px; margin-bottom: 24px;
-            border-bottom: 2px solid var(--border-color); padding-bottom: 0;
-        }
-        .admin-tab {
-            padding: 12px 20px; font-weight: 600; font-size: 0.9rem;
-            border: none; background: transparent; color: var(--text-light);
-            cursor: pointer; border-bottom: 3px solid transparent;
-            transition: var(--transition); margin-bottom: -2px;
-        }
-        .admin-tab.active { color: var(--gold-dark); border-bottom-color: var(--gold); }
-        .admin-tab-content { display: none; }
-        .admin-tab-content.active { display: block; }
-
         .offline-indicator {
             position: fixed; top: 0; left: 0; right: 0;
             background: #c0392b; color: white; text-align: center;
@@ -88,7 +74,6 @@
             color: white; padding: 5px 14px; border-radius: 24px;
             font-size: 0.75rem; cursor: pointer;
         }
-
         #loader {
             position: fixed; inset: 0; z-index: 10000;
             background: linear-gradient(135deg, #0f1a30, #1a2a4a 50%, #2a3f6e);
@@ -298,13 +283,6 @@
         }
         .song-date { font-size: 0.72rem; color: var(--text-lighter); }
         .song-actions { display: flex; gap: 12px; align-items: center; }
-        .favorite-btn, .sunday-btn {
-            background: none; border: none; font-size: 1.2rem;
-            cursor: pointer; padding: 4px 8px; border-radius: 30px;
-            min-width: 44px; line-height: 1;
-        }
-        .favorite-btn.active { color: var(--gold-dark); }
-        .sunday-btn.active { color: var(--sunday); }
         .song-open-btn {
             padding: 8px 16px; background: var(--gold); color: var(--primary);
             border: none; border-radius: 10px; font-size: 0.82rem;
@@ -350,29 +328,6 @@
             text-align: center; padding: 10px; color: var(--green);
             font-weight: 600; display: none;
         }
-        .favorites-section, .sunday-section {
-            background: var(--card-bg); border-radius: var(--radius);
-            box-shadow: var(--shadow); padding: 20px; margin-bottom: 20px;
-        }
-        .favorites-section h3, .sunday-section h3 {
-            font-family: 'Montserrat', sans-serif; margin-bottom: 16px;
-            display: flex; align-items: center; gap: 8px;
-        }
-        .favorites-list, .sunday-list { display: flex; flex-direction: column; gap: 12px; }
-        .favorite-item, .sunday-item {
-            display: flex; justify-content: space-between; align-items: center;
-            padding: 10px 0; border-bottom: 1px solid var(--border-color);
-        }
-        .favorite-item-info, .sunday-item-info { cursor: pointer; flex: 1; }
-        .favorite-item-title, .sunday-item-title { font-weight: 600; }
-        .favorite-item-meta, .sunday-item-meta { font-size: 0.7rem; color: var(--text-lighter); }
-        .remove-fav-btn, .remove-sunday-btn {
-            background: none; border: none; color: var(--red);
-            font-size: 1.2rem; cursor: pointer; padding: 6px 12px; min-width: 44px;
-        }
-        .empty-favorites, .empty-sunday {
-            text-align: center; padding: 30px; color: var(--text-lighter);
-        }
         .settings-section {
             background: var(--card-bg); border-radius: var(--radius);
             box-shadow: var(--shadow); padding: 20px; margin-bottom: 20px;
@@ -390,6 +345,19 @@
             box-shadow: var(--shadow-lg); padding: 20px;
         }
         .admin-card h2 { margin-bottom: 15px; font-family: 'Montserrat', sans-serif; }
+        .admin-tabs {
+            display: flex; gap: 8px; margin-bottom: 24px;
+            border-bottom: 2px solid var(--border-color); padding-bottom: 0;
+        }
+        .admin-tab {
+            padding: 12px 20px; font-weight: 600; font-size: 0.9rem;
+            border: none; background: transparent; color: var(--text-light);
+            cursor: pointer; border-bottom: 3px solid transparent;
+            transition: var(--transition); margin-bottom: -2px;
+        }
+        .admin-tab.active { color: var(--gold-dark); border-bottom-color: var(--gold); }
+        .admin-tab-content { display: none; }
+        .admin-tab-content.active { display: block; }
         .admin-song-item {
             display: flex; justify-content: space-between; align-items: center;
             padding: 12px; border-bottom: 1px solid var(--border-color);
@@ -474,6 +442,11 @@
             display: flex; gap: 10px; padding: 12px;
             background: var(--bg); border-radius: 12px; flex-wrap: wrap;
         }
+        .comments-locked {
+            text-align: center; padding: 16px;
+            color: var(--text-lighter); font-size: 0.85rem;
+            background: var(--bg); border-radius: 12px;
+        }
 
         .bottom-nav {
             position: fixed; bottom: 0; left: 0; right: 0;
@@ -556,10 +529,10 @@
             <nav class="nav-desktop" id="navDesktop">
                 <button class="nav-link active" onclick="switchPage('songs', this)">Песни</button>
                 <button class="nav-link" onclick="switchPage('sunday', this)">📖 На воскресенье</button>
-                <button class="nav-link" onclick="switchPage('profile', this)">👤 Профиль</button>
+                <button class="nav-link admin-only" id="navProfileBtn" onclick="switchPage('profile', this)" style="display:none;">👤 Профиль</button>
                 <button class="nav-link admin-only" id="navAdminBtn" onclick="switchPage('admin', this)" style="display:none;">👑 Админ</button>
             </nav>
-            <div class="header-right" id="headerRight"><button class="auth-btn" onclick="openAuthModal()">Войти</button></div>
+            <div class="header-right" id="headerRight"></div>
         </div>
     </header>
 
@@ -601,9 +574,9 @@
 
     <div class="page" id="page-sunday">
         <div class="profile-container">
-            <div class="sunday-section">
+            <div class="settings-section">
                 <h3>📖 Песни на воскресенье</h3>
-                <div id="sundayList" class="sunday-list">Загрузка...</div>
+                <div id="sundayList">Загрузка...</div>
             </div>
         </div>
     </div>
@@ -633,10 +606,6 @@
                         <button class="form-btn info" onclick="changeLyricsFontSize(0.1)">A+</button>
                     </div>
                 </div>
-            </div>
-            <div class="favorites-section">
-                <h3>❤️ Избранные песни</h3>
-                <div id="favoritesList" class="favorites-list">Загрузка...</div>
             </div>
         </div>
     </div>
@@ -719,24 +688,15 @@
         <div class="modal">
             <div class="modal-header">
                 <button class="modal-close" onclick="closeAuthModal()">✕</button>
-                <h2 style="color:#fff;">Вход</h2>
+                <h2 style="color:#fff;">Вход для администраторов</h2>
             </div>
             <div style="padding:20px;">
-                <div style="display:flex;border-bottom:2px solid var(--border-color);margin-bottom:20px;">
-                    <button class="auth-tab-btn active" id="loginTabBtn" onclick="switchAuthTab('login')">Вход</button>
-                    <button class="auth-tab-btn" id="registerTabBtn" onclick="switchAuthTab('register')">Регистрация</button>
-                </div>
-                <div id="loginForm">
-                    <div class="form-group"><input type="email" class="form-input" id="loginEmail" placeholder="Email" /></div>
-                    <div class="form-group"><input type="password" class="form-input" id="loginPassword" placeholder="Пароль" /></div>
-                    <button class="form-btn primary" onclick="login()" style="width:100%;">Войти</button>
-                </div>
-                <div id="registerForm" style="display:none;">
-                    <div class="form-group"><input type="text" class="form-input" id="regUsername" placeholder="Имя" /></div>
-                    <div class="form-group"><input type="email" class="form-input" id="regEmail" placeholder="Email" /></div>
-                    <div class="form-group"><input type="password" class="form-input" id="regPassword" placeholder="Пароль (мин.6)" /></div>
-                    <button class="form-btn primary" onclick="register()" style="width:100%;">Зарегистрироваться</button>
-                </div>
+                <p style="text-align:center;color:var(--text-light);margin-bottom:20px;font-size:0.85rem;">
+                    Авторизация доступна только администраторам церкви
+                </p>
+                <div class="form-group"><input type="email" class="form-input" id="loginEmail" placeholder="Email" /></div>
+                <div class="form-group"><input type="password" class="form-input" id="loginPassword" placeholder="Пароль" /></div>
+                <button class="form-btn primary" onclick="login()" style="width:100%;">Войти</button>
             </div>
         </div>
     </div>
@@ -748,7 +708,7 @@
         <button class="bottom-nav-item" onclick="switchPage('sunday', this)" data-page="sunday">
             <svg viewBox="0 0 24 24"><path d="M4 4h16v16H4z" /><path d="M12 8v8" /><path d="M8 12h8" /></svg>Воскресенье
         </button>
-        <button class="bottom-nav-item" onclick="switchPage('profile', this)" data-page="profile">
+        <button class="bottom-nav-item admin-only" id="bottomProfileBtn" onclick="switchPage('profile', this)" data-page="profile" style="display:none;">
             <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" /><circle cx="12" cy="7" r="4" /></svg>Профиль
         </button>
         <button class="bottom-nav-item admin-only" id="bottomAdminBtn" onclick="switchPage('admin', this)" data-page="admin" style="display:none;">
@@ -773,6 +733,7 @@
         const storage = firebase.storage();
         db.enablePersistence({ synchronizeTabs: true }).catch(() => {});
 
+        // ✅ Только эти email могут войти и что-то делать
         const ADMIN_EMAILS = [
             "kpprevkponaog@gmail.com",
             "dinaprotsyuk@list.ru",
@@ -789,7 +750,6 @@
         let currentSort = 'number-asc';
         let categories = ["Рождество", "Пасха", "Жатва", "Троица", "Свадьба", "Семейные", "Новый год", "Прочее"];
         let localSongsCache = [];
-        let userFavorites = new Set();
         let sundaySongsData = [];
         let unsubscribeSunday = null;
 
@@ -836,7 +796,7 @@
             return localSongsCache;
         }
 
-        /* ========== Тема и размер шрифта ========== */
+        /* ========== Тема и размер шрифта (доступно всем) ========== */
         function toggleTheme() {
             const current = document.documentElement.getAttribute('data-theme');
             const next = current === 'dark' ? '' : 'dark';
@@ -890,7 +850,7 @@
                 const doc = await db.collection('settings').doc('categories').get();
                 if (doc.exists && doc.data().list) {
                     categories = doc.data().list;
-                } else {
+                } else if (isAdmin) {
                     await db.collection('settings').doc('categories').set({ list: categories });
                 }
                 localStorage.setItem('cached_categories', JSON.stringify(categories));
@@ -922,7 +882,7 @@
             });
         }
 
-        /* ========== Песни на воскресенье ========== */
+        /* ========== Песни на воскресенье (публично) ========== */
         async function loadSundaySongs() {
             if (unsubscribeSunday) unsubscribeSunday();
             try {
@@ -982,21 +942,27 @@
             const container = document.getElementById('sundayList');
             if (!container) return;
             if (sundaySongsData.length === 0) {
-                container.innerHTML = '<div class="empty-sunday">Нет песен, отмеченных на воскресенье</div>';
+                container.innerHTML = '<div style="text-align:center;padding:30px;color:var(--text-lighter);">Нет песен, отмеченных на воскресенье</div>';
                 return;
             }
             container.innerHTML = sundaySongsData.map(s => `
-                <div class="sunday-item">
-                    <div class="sunday-item-info" onclick="openSongModal('${s.songId}')">
-                        <div class="sunday-item-title">№${s.number || '?'} - ${escHtml(s.title || '')}</div>
-                        <div class="sunday-item-meta">${escHtml(s.category || '')} · Добавил: ${escHtml(s.addedByName || 'Админ')}${s.addedAt ? ' · ' + new Date(s.addedAt.toDate()).toLocaleDateString() : ''}</div>
+                <div class="favorite-item" style="border-bottom:1px solid var(--border-color);padding:10px 0;">
+                    <div style="cursor:pointer;flex:1;" onclick="openSongModal('${s.songId}')">
+                        <div style="font-weight:600;">№${s.number || '?'} - ${escHtml(s.title || '')}</div>
+                        <div style="font-size:0.7rem;color:var(--text-lighter);">${escHtml(s.category || '')}${s.addedAt ? ' · ' + new Date(s.addedAt.toDate()).toLocaleDateString() : ''}</div>
                     </div>
-                    ${isAdmin ? `<button class="remove-sunday-btn" onclick="toggleSunday('${s.songId}')">🗑️</button>` : ''}
+                    ${isAdmin ? `<button onclick="toggleSunday('${s.songId}')" style="background:none;border:none;color:var(--red);font-size:1.2rem;cursor:pointer;padding:6px 12px;">🗑️</button>` : ''}
                 </div>`).join('');
         }
 
         /* ========== Страницы ========== */
         function switchPage(page, btn) {
+            // ✅ Профиль и Админ — только для админов
+            if ((page === 'profile' || page === 'admin') && !isAdmin) {
+                showToast('Только для администраторов', 'error');
+                return;
+            }
+
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
             const pageEl = document.getElementById('page-' + page);
             if (pageEl) pageEl.classList.add('active');
@@ -1038,24 +1004,11 @@
         /* ========== Загрузка и отображение песен ========== */
         async function loadSongs() {
             if (!navigator.onLine) {
-                renderSongs(true);
+                renderSongs();
                 return;
             }
             try {
                 const snap = await db.collection('songs').get();
-                if (snap.empty) {
-                    const initial = [
-                        { id: "song_1", number: 1, title: "Ты — мой Бог", key: "C", category: "Прочее",
-                          date: "2025-09-15", preview: "Ты мой Бог...",
-                          lyrics: "Ты мой Бог, я прославляю Тебя" },
-                        { id: "song_2", number: 2, title: "Свят, свят, свят", key: "G", category: "Прочее",
-                          date: "2025-08-20", preview: "Свят...",
-                          lyrics: "Свят, свят, свят — Господь Вседержитель" }
-                    ];
-                    const batch = db.batch();
-                    initial.forEach(s => batch.set(db.collection('songs').doc(s.id), s));
-                    await batch.commit();
-                }
                 await cacheSongsLocally();
             } catch (e) {
                 console.error("Ошибка загрузки песен:", e);
@@ -1103,7 +1056,6 @@
             grid.innerHTML = songs.length === 0
                 ? '<p style="text-align:center;padding:40px;color:var(--text-lighter);">Нет песен</p>'
                 : songs.map(s => {
-                    const isFav = currentUser && userFavorites.has(s.id);
                     const isSun = isSundaySong(s.id);
                     const previewText = stripChords(s.lyrics || '').substring(0, 100);
                     return `<div class="song-card ${isSun ? 'sunday-marked' : ''}">
@@ -1126,8 +1078,7 @@
                         <div class="song-card-footer">
                             <span class="song-date">${escHtml(s.date || '')}</span>
                             <div class="song-actions">
-                                <button class="favorite-btn ${isFav ? 'active' : ''}" onclick="event.stopPropagation();toggleFavorite('${s.id}')">${isFav ? '❤️' : '🤍'}</button>
-                                ${isAdmin ? `<button class="sunday-btn ${isSun ? 'active' : ''}" onclick="event.stopPropagation();toggleSunday('${s.id}')">${isSun ? '📖' : '⭐'}</button>` : ''}
+                                ${isAdmin ? `<button class="admin-btn" style="background:var(--bg);color:var(--sunday);" onclick="event.stopPropagation();toggleSunday('${s.id}')">${isSun ? '📖' : '⭐'}</button>` : ''}
                                 <button class="song-open-btn" onclick="event.stopPropagation();openSongModal('${s.id}')">Открыть</button>
                             </div>
                         </div>
@@ -1157,34 +1108,9 @@
             renderSongs();
         }
 
-        /* ========== Избранное ========== */
-        async function toggleFavorite(songId) {
-            if (!currentUser) { openAuthModal(); return; }
-            if (!navigator.onLine) { showToast('Нет подключения', 'error'); return; }
-            try {
-                const userRef = db.collection('users').doc(currentUser.uid);
-                const doc = await userRef.get();
-                let favs = doc.exists ? (doc.data().favorites || []) : [];
-                if (favs.includes(songId)) favs = favs.filter(id => id !== songId);
-                else favs.push(songId);
-                await userRef.set({ favorites: favs }, { merge: true });
-                userFavorites = new Set(favs);
-                renderSongs();
-                if (document.getElementById('page-profile').classList.contains('active')) loadProfilePage();
-                showToast(favs.includes(songId) ? 'Добавлено в избранное' : 'Удалено из избранного', 'success');
-            } catch (e) {
-                console.error(e);
-                showToast('Ошибка: ' + e.message, 'error');
-            }
-        }
-
-        /* ========== Профиль ========== */
+        /* ========== Профиль (только для админов) ========== */
         async function loadProfilePage() {
-            if (!currentUser) {
-                const pageProfile = document.getElementById('page-profile');
-                pageProfile.innerHTML = '<div class="profile-container" style="text-align:center;padding:40px;"><p>Войдите, чтобы увидеть профиль</p><button class="auth-btn" onclick="openAuthModal()">Войти</button></div>';
-                return;
-            }
+            if (!currentUser || !isAdmin) return;
 
             document.getElementById('profileNameInput').value = getUserName();
             document.getElementById('profileEmailDisplay').textContent = currentUser.email || '';
@@ -1198,35 +1124,6 @@
                 avatarDiv.style.backgroundImage = '';
                 avatarDiv.style.backgroundColor = '#c9a84c';
                 avatarDiv.textContent = getUserName().charAt(0).toUpperCase();
-            }
-
-            try {
-                const userDoc = await db.collection('users').doc(currentUser.uid).get();
-                const favorites = userDoc.exists ? (userDoc.data().favorites || []) : [];
-                userFavorites = new Set(favorites);
-
-                const favContainer = document.getElementById('favoritesList');
-                if (favorites.length === 0) {
-                    favContainer.innerHTML = '<div class="empty-favorites">Нет избранных песен</div>';
-                    return;
-                }
-                const allSongs = getCachedSongs();
-                const favSongs = allSongs.filter(s => favorites.includes(s.id));
-                if (favSongs.length === 0) {
-                    favContainer.innerHTML = '<div class="empty-favorites">Нет избранных песен</div>';
-                    return;
-                }
-                favContainer.innerHTML = favSongs.map(s =>
-                    `<div class="favorite-item">
-                        <div class="favorite-item-info" onclick="openSongModal('${s.id}')">
-                            <div class="favorite-item-title">${escHtml(s.title || '')}</div>
-                            <div class="favorite-item-meta">№${s.number || '?'} · ${escHtml(s.category || '')}${s.key ? ' · ' + escHtml(s.key) : ''}</div>
-                        </div>
-                        <button class="remove-fav-btn" onclick="toggleFavorite('${s.id}')">🗑️</button>
-                    </div>`).join('');
-            } catch (e) {
-                console.error('loadProfilePage error:', e);
-                showToast('Ошибка загрузки профиля', 'error');
             }
         }
 
@@ -1299,9 +1196,15 @@
             document.getElementById('songModal').classList.add('active');
             document.body.style.overflow = 'hidden';
 
-            if (navigator.onLine) {
+            // ✅ Комментарии и статистика — только для админов
+            if (isAdmin && navigator.onLine) {
                 loadComments(songId).catch(e => console.warn('comments:', e));
                 loadSongStats(songId).catch(e => console.warn('stats:', e));
+            } else {
+                document.getElementById('commentsList').innerHTML =
+                    '<div class="comments-locked">💬 Комментарии доступны только администраторам</div>';
+                document.getElementById('commentFormArea').innerHTML = '';
+                document.getElementById('songStats').innerHTML = '';
             }
         }
 
@@ -1320,8 +1223,9 @@
             }
         }
 
-        /* ========== Комментарии ========== */
+        /* ========== Комментарии (только админы) ========== */
         async function loadComments(songId) {
+            if (!isAdmin) return;
             const listEl = document.getElementById('commentsList');
             try {
                 const snap = await db.collection('comments')
@@ -1336,22 +1240,22 @@
                     : comments.map(c => `
                         <div class="comment-item">
                             <div style="flex:1;">
-                                <div><strong>${escHtml(c.username || 'User')}</strong> · ${c.timestamp ? new Date(c.timestamp).toLocaleDateString() : ''}</div>
+                                <div><strong>${escHtml(c.username || 'Admin')}</strong> · ${c.timestamp ? new Date(c.timestamp).toLocaleDateString() : ''}</div>
                                 <div>${escHtml(c.text || '')}</div>
                             </div>
-                            ${(currentUser && (currentUser.uid === c.userId || isAdmin)) ? `<button onclick="deleteComment('${c.id}')" style="background:none;border:none;color:var(--red);cursor:pointer;padding:4px 8px;font-size:1rem;">✕</button>` : ''}
+                            <button onclick="deleteComment('${c.id}')" style="background:none;border:none;color:var(--red);cursor:pointer;padding:4px 8px;font-size:1rem;">✕</button>
                         </div>`).join('');
             } catch (e) {
                 console.warn('loadComments failed:', e);
                 listEl.innerHTML = '<p style="text-align:center;padding:16px;color:var(--text-lighter);">Не удалось загрузить комментарии</p>';
             }
-            document.getElementById('commentFormArea').innerHTML = currentUser
-                ? `<input type="text" id="commentInput" class="form-input" placeholder="Комментарий..." />
-                   <button class="form-btn primary" onclick="submitComment()" style="margin-top:8px;width:100%;">Отправить</button>`
-                : '<p style="text-align:center;"><a onclick="closeSongModal();openAuthModal();" style="color:var(--gold-dark);cursor:pointer;">Войдите</a>, чтобы комментировать</p>';
+            document.getElementById('commentFormArea').innerHTML =
+                `<input type="text" id="commentInput" class="form-input" placeholder="Комментарий..." />
+                 <button class="form-btn primary" onclick="submitComment()" style="margin-top:8px;width:100%;">Отправить</button>`;
         }
 
         async function submitComment() {
+            if (!isAdmin) { showToast('Только для администраторов', 'error'); return; }
             if (!navigator.onLine) { showToast('Нет подключения', 'error'); return; }
             const input = document.getElementById('commentInput');
             if (!input || !currentUser || !currentSongId) return;
@@ -1374,15 +1278,14 @@
         }
 
         async function deleteComment(id) {
+            if (!isAdmin) return;
             try {
                 await db.collection('comments').doc(id).delete();
                 if (currentSongId) loadComments(currentSongId);
-            } catch (e) {
-                console.error(e);
-            }
+            } catch (e) { console.error(e); }
         }
 
-        /* ========== Статистика исполнений ========== */
+        /* ========== Статистика исполнений (только админы) ========== */
         async function markAsPerformed() {
             if (!currentSongId || !isAdmin) return;
             if (!navigator.onLine) { showToast('Нет подключения', 'error'); return; }
@@ -1403,6 +1306,7 @@
         }
 
         async function loadSongStats(songId) {
+            if (!isAdmin) return;
             const container = document.getElementById('songStats');
             if (!container) return;
             try {
@@ -1425,9 +1329,9 @@
                 const lastDate = last.performedAt && last.performedAt.toDate ? last.performedAt.toDate() : null;
                 const daysAgo = lastDate ? Math.floor((Date.now() - lastDate.getTime()) / 86400000) : '?';
                 container.innerHTML = `<strong>Статистика исполнений:</strong>
-                    <p class="last-performed">Последний раз: ${daysAgo} дн. назад (${lastDate ? lastDate.toLocaleDateString() : '?'})</p>
-                    <p class="last-performed">Исполнил: ${escHtml(last.performedByName || '?')}</p>
-                    <p class="last-performed">Всего исполнений: ${performances.length}</p>`;
+                    <p>Последний раз: ${daysAgo} дн. назад (${lastDate ? lastDate.toLocaleDateString() : '?'})</p>
+                    <p>Исполнил: ${escHtml(last.performedByName || '?')}</p>
+                    <p>Всего исполнений: ${performances.length}</p>`;
             } catch (e) {
                 console.warn('loadSongStats failed:', e);
                 container.innerHTML = '';
@@ -1435,6 +1339,7 @@
         }
 
         async function loadAdminStats() {
+            if (!isAdmin) return;
             const container = document.getElementById('adminStatsList');
             if (!container) return;
             try {
@@ -1472,13 +1377,10 @@
                 await db.collection('songPerformances').doc(id).delete();
                 showToast('Запись удалена', 'success');
                 loadAdminStats();
-            } catch (e) {
-                console.error(e);
-                showToast('Ошибка: ' + e.message, 'error');
-            }
+            } catch (e) { console.error(e); }
         }
 
-        /* ========== Редактирование ========== */
+        /* ========== Редактирование (только админы) ========== */
         function showEditForm() {
             if (!isAdmin || !currentSongId) return;
             document.getElementById('editFormContainer').classList.add('active');
@@ -1643,6 +1545,7 @@
         }
 
         async function loadAdminData() {
+            if (!isAdmin) return;
             const container = document.getElementById('adminSongsList');
             if (!container) return;
             try {
@@ -1669,11 +1572,10 @@
             }
         }
 
-        /* ========== Авторизация ========== */
+        /* ========== Авторизация (только админы) ========== */
         function openAuthModal() {
             document.getElementById('authModal').classList.add('active');
             document.body.style.overflow = 'hidden';
-            switchAuthTab('login');
         }
 
         function closeAuthModal() {
@@ -1681,28 +1583,17 @@
             document.body.style.overflow = '';
         }
 
-        function switchAuthTab(tab) {
-            const lf = document.getElementById('loginForm');
-            const rf = document.getElementById('registerForm');
-            const lt = document.getElementById('loginTabBtn');
-            const rt = document.getElementById('registerTabBtn');
-            if (tab === 'login') {
-                lf.style.display = 'block';
-                rf.style.display = 'none';
-                lt.classList.add('active');
-                rt.classList.remove('active');
-            } else {
-                lf.style.display = 'none';
-                rf.style.display = 'block';
-                rt.classList.add('active');
-                lt.classList.remove('active');
-            }
-        }
-
         async function login() {
             const email = document.getElementById('loginEmail').value.trim();
             const password = document.getElementById('loginPassword').value;
             if (!email || !password) { showToast('Введите данные', 'error'); return; }
+
+            // ✅ Проверка: email должен быть в списке админов
+            if (!ADMIN_EMAILS.includes(email)) {
+                showToast('Доступ только для администраторов', 'error');
+                return;
+            }
+
             try {
                 await auth.signInWithEmailAndPassword(email, password);
                 closeAuthModal();
@@ -1719,42 +1610,30 @@
             }
         }
 
-        async function register() {
-            const username = document.getElementById('regUsername').value.trim();
-            const email = document.getElementById('regEmail').value.trim();
-            const password = document.getElementById('regPassword').value;
-            if (!username || !email || !password) { showToast('Заполните поля', 'error'); return; }
-            if (password.length < 6) { showToast('Пароль мин. 6 символов', 'error'); return; }
-            try {
-                const cred = await auth.createUserWithEmailAndPassword(email, password);
-                await cred.user.updateProfile({ displayName: username });
-                await db.collection('users').doc(cred.user.uid).set({
-                    username, email, favorites: [], createdAt: Date.now()
-                });
-                closeAuthModal();
-                showToast('Регистрация успешна!', 'success');
-            } catch (e) {
-                console.error(e);
-                let msg = e.message;
-                if (e.code === 'auth/email-already-in-use') msg = 'Этот email уже используется';
-                else if (e.code === 'auth/weak-password') msg = 'Слабый пароль';
-                else if (e.code === 'auth/invalid-email') msg = 'Некорректный email';
-                showToast('Ошибка: ' + msg, 'error');
+        function logout() {
+            auth.signOut();
+            currentUser = null;
+            isAdmin = false;
+            // Возврат на главную, если были на админ-странице
+            const activePage = document.querySelector('.page.active');
+            if (activePage && (activePage.id === 'page-admin' || activePage.id === 'page-profile')) {
+                switchPage('songs');
             }
+            showToast('Вы вышли', 'info');
         }
 
         /* ========== UI пользователя ========== */
         function updateUI(user) {
             currentUser = user;
             isAdmin = user ? ADMIN_EMAILS.includes(user.email) : false;
-            if (!user) {
-                userFavorites = new Set();
-            }
+
+            // Показ/скрытие элементов только для админов
             document.querySelectorAll('.admin-only').forEach(el => {
                 el.style.display = isAdmin ? '' : 'none';
             });
+
             const headerRight = document.getElementById('headerRight');
-            if (user) {
+            if (user && isAdmin) {
                 const name = getUserName();
                 const photo = getUserPhoto();
                 const avatarHtml = photo
@@ -1763,16 +1642,17 @@
                 headerRight.innerHTML = `
                     <div class="user-badge" onclick="toggleDropdown()">
                         ${avatarHtml}
-                        <span class="user-name">${escHtml(name)}${isAdmin ? ' 👑' : ''}</span>
+                        <span class="user-name">${escHtml(name)} 👑</span>
                     </div>
                     <div class="user-dropdown" id="userDropdown">
                         <button class="dropdown-item" onclick="switchPage('profile')">👤 Профиль</button>
                         <button class="dropdown-item" onclick="switchPage('songs')">🎵 Песни</button>
                         <button class="dropdown-item" onclick="switchPage('sunday')">📖 На воскресенье</button>
-                        ${isAdmin ? '<button class="dropdown-item" onclick="switchPage(\'admin\')">👑 Админ</button>' : ''}
+                        <button class="dropdown-item" onclick="switchPage('admin')">👑 Админ</button>
                         <button class="dropdown-item danger" onclick="logout()">🚪 Выйти</button>
                     </div>`;
             } else {
+                // Обычный посетитель — видит только кнопку "Войти"
                 headerRight.innerHTML = '<button class="auth-btn" onclick="openAuthModal()">Войти</button>';
             }
         }
@@ -1780,15 +1660,6 @@
         function toggleDropdown() {
             const dropdown = document.getElementById('userDropdown');
             if (dropdown) dropdown.classList.toggle('show');
-        }
-
-        function logout() {
-            auth.signOut();
-            currentUser = null;
-            isAdmin = false;
-            userFavorites = new Set();
-            switchPage('songs');
-            showToast('Вы вышли', 'info');
         }
 
         document.addEventListener('click', (e) => {
@@ -1808,7 +1679,7 @@
         window.addEventListener('online', checkOnlineStatus);
         window.addEventListener('offline', checkOnlineStatus);
 
-        /* ========== Закрытие модалок по клику на фон ========== */
+        /* ========== Закрытие модалок ========== */
         document.getElementById('songModal').addEventListener('click', (e) => {
             if (e.target.id === 'songModal') closeSongModal();
         });
@@ -1816,12 +1687,32 @@
             if (e.target.id === 'authModal') closeAuthModal();
         });
 
-        /* ========== Авторизация — состояние ========== */
-        auth.onAuthStateChanged(user => {
+        /* ========== Auth state ========== */
+        auth.onAuthStateChanged(async user => {
+            // Если вошёл не админ — разлогиниваем
+            if (user && !ADMIN_EMAILS.includes(user.email)) {
+                await auth.signOut();
+                showToast('Доступ только для администраторов', 'error');
+                return;
+            }
             updateUI(user);
             if (document.getElementById('page-songs').classList.contains('active')) renderSongs();
-            if (document.getElementById('page-profile').classList.contains('active')) loadProfilePage();
             if (document.getElementById('page-sunday').classList.contains('active')) renderSundayPage();
+            if (user && isAdmin) {
+                // Восстанавливаем профиль админа в базе (если нет)
+                try {
+                    const userRef = db.collection('users').doc(user.uid);
+                    const userDoc = await userRef.get();
+                    if (!userDoc.exists) {
+                        await userRef.set({
+                            username: getUserName(),
+                            email: user.email,
+                            createdAt: Date.now(),
+                            role: 'admin'
+                        });
+                    }
+                } catch (e) { console.warn('user profile init failed:', e); }
+            }
         });
 
         /* ========== Инициализация ========== */
