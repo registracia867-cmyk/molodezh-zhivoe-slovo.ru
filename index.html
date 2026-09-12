@@ -8,7 +8,6 @@
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-storage-compat.js"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         :root {
@@ -62,12 +61,14 @@
         .admin-tabs {
             display: flex; gap: 8px; margin-bottom: 24px;
             border-bottom: 2px solid var(--border-color); padding-bottom: 0;
+            overflow-x: auto;
         }
         .admin-tab {
             padding: 12px 20px; font-weight: 600; font-size: 0.9rem;
             border: none; background: transparent; color: var(--text-light);
             cursor: pointer; border-bottom: 3px solid transparent;
             transition: var(--transition); margin-bottom: -2px;
+            white-space: nowrap;
         }
         .admin-tab.active { color: var(--gold-dark); border-bottom-color: var(--gold); }
         .admin-tab-content { display: none; }
@@ -324,7 +325,7 @@
         }
         .profile-avatar-large {
             width: 90px; height: 90px; border-radius: 50%;
-            margin: 20px auto 10px; cursor: pointer;
+            margin: 20px auto 10px;
             border: 4px solid var(--gold-light);
             background-size: cover; background-position: center;
             display: flex; align-items: center; justify-content: center;
@@ -374,6 +375,7 @@
         .setting-row {
             display: flex; justify-content: space-between; align-items: center;
             padding: 10px 0; border-bottom: 1px solid var(--border-color);
+            gap: 12px; flex-wrap: wrap;
         }
         .setting-label { font-weight: 500; }
 
@@ -528,6 +530,12 @@
             line-height: 1.5;
         }
 
+        .admin-list-item {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 10px 0; border-bottom: 1px solid var(--border-color);
+            font-size: 0.9rem;
+        }
+
         @media (min-width: 769px) {
             body { padding-bottom: 0; }
             .nav-desktop { display: flex; }
@@ -560,6 +568,7 @@
             <nav class="nav-desktop" id="navDesktop">
                 <button class="nav-link active" onclick="switchPage('songs', this)">Песни</button>
                 <button class="nav-link" onclick="switchPage('sunday', this)">📖 На воскресенье</button>
+                <button class="nav-link" onclick="switchPage('profile', this)">👤 Профиль</button>
                 <button class="nav-link admin-only" id="navAdminBtn" onclick="switchPage('admin', this)" style="display:none;">👑 Админ</button>
             </nav>
             <div class="header-right" id="headerRight"><button class="auth-btn" onclick="openAuthModal()">Войти</button></div>
@@ -611,6 +620,39 @@
         </div>
     </div>
 
+    <div class="page" id="page-profile">
+        <div class="profile-container">
+            <div class="profile-card">
+                <div class="profile-avatar-large" id="profileAvatarLarge"></div>
+                <div class="profile-info">
+                    <input type="text" id="profileNameInput" class="profile-name-input" placeholder="Ваше имя" />
+                    <div class="profile-email" id="profileEmailDisplay"></div>
+                    <div class="profile-success" id="profileSuccessMsg">✅ Сохранено</div>
+                    <button class="form-btn primary" onclick="saveProfileChanges()">Сохранить</button>
+                </div>
+            </div>
+            <div class="settings-section">
+                <h3>⚙️ Настройки</h3>
+                <div class="setting-row">
+                    <span class="setting-label">Темная тема</span>
+                    <button class="form-btn info" onclick="toggleTheme()" id="themeSettingBtn">🌙 Включить</button>
+                </div>
+                <div class="setting-row">
+                    <span class="setting-label">Размер шрифта песни</span>
+                    <div style="display:flex;gap:8px;align-items:center;">
+                        <button class="form-btn info" onclick="changeLyricsFontSize(-0.1)">A-</button>
+                        <span id="fontSizeDisplay" style="padding:8px;min-width:60px;text-align:center;">100%</span>
+                        <button class="form-btn info" onclick="changeLyricsFontSize(0.1)">A+</button>
+                    </div>
+                </div>
+            </div>
+            <div class="settings-section">
+                <h3>👑 Администраторы</h3>
+                <div id="adminList"></div>
+            </div>
+        </div>
+    </div>
+
     <div class="page" id="page-admin">
         <section class="admin-section">
             <div class="admin-card">
@@ -619,7 +661,6 @@
                     <button class="admin-tab active" onclick="switchAdminTab('add')">➕ Добавить</button>
                     <button class="admin-tab" onclick="switchAdminTab('manage')">🎵 Управление</button>
                     <button class="admin-tab" onclick="switchAdminTab('stats')">📊 Статистика</button>
-                    <button class="admin-tab" onclick="switchAdminTab('settings')">⚙️ Настройки</button>
                 </div>
                 <div class="admin-tab-content active" id="adminTab-add">
                     <h3>Добавить новую песню</h3>
@@ -637,25 +678,6 @@
                 <div class="admin-tab-content" id="adminTab-stats">
                     <h3>Статистика исполнений</h3>
                     <div id="adminStatsList">Загрузка...</div>
-                </div>
-                <div class="admin-tab-content" id="adminTab-settings">
-                    <h3>Настройки</h3>
-                    <div class="settings-section" style="box-shadow:none;padding:0;background:transparent;">
-                        <div class="setting-row">
-                            <span class="setting-label">Темная тема</span>
-                            <button class="form-btn info" onclick="toggleTheme()" id="themeSettingBtn">🌙 Включить</button>
-                        </div>
-                        <div class="setting-row">
-                            <span class="setting-label">Размер шрифта песни</span>
-                            <div style="display:flex;gap:8px;align-items:center;">
-                                <button class="form-btn info" onclick="changeLyricsFontSize(-0.1)">A-</button>
-                                <span id="fontSizeDisplay" style="padding:8px;min-width:60px;text-align:center;">100%</span>
-                                <button class="form-btn info" onclick="changeLyricsFontSize(0.1)">A+</button>
-                            </div>
-                        </div>
-                    </div>
-                    <h3 style="margin-top:20px;">📧 Список администраторов</h3>
-                    <div id="adminList"></div>
                 </div>
             </div>
         </section>
@@ -731,6 +753,9 @@
         <button class="bottom-nav-item" onclick="switchPage('sunday', this)" data-page="sunday">
             <svg viewBox="0 0 24 24"><path d="M4 4h16v16H4z" /><path d="M12 8v8" /><path d="M8 12h8" /></svg>Воскресенье
         </button>
+        <button class="bottom-nav-item" onclick="switchPage('profile', this)" data-page="profile">
+            <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" /><circle cx="12" cy="7" r="4" /></svg>Профиль
+        </button>
         <button class="bottom-nav-item admin-only" id="bottomAdminBtn" onclick="switchPage('admin', this)" data-page="admin" style="display:none;">
             <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3" /><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-2 2 2 2 0 01-2-2v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 01-2-2 2 2 0 012-2h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 010-2.83 2 2 0 012.83 0l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 012-2 2 2 0 012 2v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 0 2 2 0 010 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 012 2 2 2 0 01-2 2h-.09a1.65 1.65 0 00-1.51 1z" /></svg>Админ
         </button>
@@ -751,7 +776,6 @@
         const auth = firebase.auth();
         db.enablePersistence({ synchronizeTabs: true }).catch(() => {});
 
-        /* ========== СПИСОК АДМИНИСТРАТОРОВ ========== */
         const ADMIN_EMAILS = [
             "kpprevkponaog@gmail.com",
             "dinaprotsyuk@list.ru",
@@ -999,6 +1023,7 @@
 
             if (page === 'songs') renderSongs();
             if (page === 'sunday') renderSundayPage();
+            if (page === 'profile') loadProfilePage();
             if (page === 'admin' && isAdmin) switchAdminTab('add');
         }
 
@@ -1012,7 +1037,6 @@
             if (targetDiv) targetDiv.classList.add('active');
             if (tab === 'manage') loadAdminData();
             if (tab === 'stats') loadAdminStats();
-            if (tab === 'settings') renderAdminList();
         }
 
         function scrollToTop() { window.scrollTo({ top: 0, behavior: 'smooth' }); }
@@ -1134,6 +1158,59 @@
             renderSongs();
         }
 
+        /* ========== Профиль ========== */
+        async function loadProfilePage() {
+            // Админ-список показываем в любом случае
+            renderAdminList();
+
+            if (!currentUser) {
+                // Без входа показываем сообщение, но список админов остаётся
+                document.getElementById('profileAvatarLarge').style.backgroundImage = '';
+                document.getElementById('profileAvatarLarge').style.backgroundColor = 'var(--border-color)';
+                document.getElementById('profileAvatarLarge').textContent = '👤';
+                document.getElementById('profileNameInput').value = '';
+                document.getElementById('profileNameInput').disabled = true;
+                document.getElementById('profileEmailDisplay').textContent = 'Войдите как администратор, чтобы редактировать профиль';
+                return;
+            }
+
+            document.getElementById('profileNameInput').disabled = false;
+            document.getElementById('profileNameInput').value = getUserName();
+            document.getElementById('profileEmailDisplay').textContent = currentUser.email || '';
+
+            const avatarDiv = document.getElementById('profileAvatarLarge');
+            avatarDiv.style.backgroundImage = '';
+            avatarDiv.style.backgroundColor = '#c9a84c';
+            avatarDiv.textContent = '👑';
+        }
+
+        async function saveProfileChanges() {
+            if (!currentUser) { showToast('Войдите для этого', 'error'); return; }
+            const newName = document.getElementById('profileNameInput').value.trim();
+            if (!newName) { showToast('Введите имя', 'error'); return; }
+            try {
+                await currentUser.updateProfile({ displayName: newName });
+                const msgDiv = document.getElementById('profileSuccessMsg');
+                msgDiv.style.display = 'block';
+                setTimeout(() => msgDiv.style.display = 'none', 2500);
+                showToast('Имя обновлено', 'success');
+                updateUI(currentUser);
+            } catch (e) {
+                console.error(e);
+                showToast('Ошибка сохранения', 'error');
+            }
+        }
+
+        function renderAdminList() {
+            const container = document.getElementById('adminList');
+            if (!container) return;
+            container.innerHTML = ADMIN_EMAILS.map(email => `
+                <div class="admin-list-item">
+                    <span>${escHtml(email)}</span>
+                    ${currentUser && currentUser.email === email ? '<span style="color:var(--gold-dark);font-weight:600;">(вы)</span>' : ''}
+                </div>`).join('');
+        }
+
         /* ========== Модалка песни ========== */
         async function openSongModal(songId) {
             if (!songId) return;
@@ -1182,32 +1259,11 @@
             }
         }
 
-        /* ========== Комментарии (пишут только админы) ========== */
+        /* ========== Комментарии ========== */
         async function loadComments(songId) {
             const listEl = document.getElementById('commentsList');
-            try {
-                const snap = await db.collection('comments')
-                    .where('songId', '==', songId)
-                    .limit(50)
-                    .get();
-                const comments = snap.docs
-                    .map(d => ({ id: d.id, ...d.data() }))
-                    .sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
-                listEl.innerHTML = comments.length === 0
-                    ? '<p style="text-align:center;padding:16px;color:var(--text-lighter);">Нет комментариев</p>'
-                    : comments.map(c => `
-                        <div class="comment-item">
-                            <div style="flex:1;">
-                                <div><strong>${escHtml(c.username || 'Админ')}</strong> · ${c.timestamp ? new Date(c.timestamp).toLocaleDateString() : ''}</div>
-                                <div>${escHtml(c.text || '')}</div>
-                            </div>
-                            ${(currentUser && isAdmin) ? `<button onclick="deleteComment('${c.id}')" style="background:none;border:none;color:var(--red);cursor:pointer;padding:4px 8px;font-size:1rem;">✕</button>` : ''}
-                        </div>`).join('');
-            } catch (e) {
-                console.warn('loadComments failed:', e);
-                listEl.innerHTML = '<p style="text-align:center;padding:16px;color:var(--text-lighter);">Не удалось загрузить комментарии</p>';
-            }
-            // Форма только для админов
+            if (!listEl) return;
+
             if (isAdmin) {
                 document.getElementById('commentFormArea').innerHTML = `
                     <input type="text" id="commentInput" class="form-input" placeholder="Ваш комментарий..." />
@@ -1215,6 +1271,41 @@
             } else {
                 document.getElementById('commentFormArea').innerHTML =
                     '<p style="text-align:center;font-size:0.85rem;color:var(--text-lighter);padding:8px;">💬 Комментарии могут оставлять только администраторы</p>';
+            }
+
+            if (!navigator.onLine) {
+                listEl.innerHTML = '<p style="text-align:center;padding:16px;color:var(--text-lighter);">Нет подключения</p>';
+                return;
+            }
+
+            listEl.innerHTML = '<p style="text-align:center;padding:16px;color:var(--text-lighter);">Загрузка...</p>';
+
+            try {
+                const snap = await db.collection('comments')
+                    .where('songId', '==', songId)
+                    .limit(50)
+                    .get();
+
+                const comments = snap.docs
+                    .map(d => ({ id: d.id, ...d.data() }))
+                    .sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
+
+                if (comments.length === 0) {
+                    listEl.innerHTML = '<p style="text-align:center;padding:16px;color:var(--text-lighter);">Нет комментариев</p>';
+                    return;
+                }
+
+                listEl.innerHTML = comments.map(c => `
+                    <div class="comment-item">
+                        <div style="flex:1;">
+                            <div><strong>${escHtml(c.username || 'Админ')}</strong> · ${c.timestamp ? new Date(c.timestamp).toLocaleDateString() : ''}</div>
+                            <div>${escHtml(c.text || '')}</div>
+                        </div>
+                        ${isAdmin ? `<button onclick="deleteComment('${c.id}')" style="background:none;border:none;color:var(--red);cursor:pointer;padding:4px 8px;font-size:1rem;">✕</button>` : ''}
+                    </div>`).join('');
+            } catch (e) {
+                console.warn('loadComments failed:', e);
+                listEl.innerHTML = '<p style="text-align:center;padding:16px;color:var(--text-lighter);">Не удалось загрузить комментарии</p>';
             }
         }
 
@@ -1520,19 +1611,7 @@
             }
         }
 
-        function renderAdminList() {
-            const container = document.getElementById('adminList');
-            if (!container) return;
-            container.innerHTML = ADMIN_EMAILS.map(email => `
-                <div class="admin-song-item">
-                    <div>
-                        <strong>${escHtml(email)}</strong>
-                        ${currentUser && currentUser.email === email ? ' <span style="color:var(--gold-dark);">(вы)</span>' : ''}
-                    </div>
-                </div>`).join('');
-        }
-
-        /* ========== Авторизация (только админы) ========== */
+        /* ========== Авторизация ========== */
         function openAuthModal() {
             document.getElementById('authModal').classList.add('active');
             document.body.style.overflow = 'hidden';
@@ -1548,7 +1627,6 @@
             const password = document.getElementById('loginPassword').value;
             if (!email || !password) { showToast('Введите email и пароль', 'error'); return; }
 
-            // Проверяем email ДО авторизации — вдруг пользователь не админ
             if (!ADMIN_EMAILS.map(e => e.toLowerCase()).includes(email)) {
                 showToast('У вас нет доступа к панели администратора', 'error');
                 return;
@@ -1582,7 +1660,6 @@
             currentUser = user;
             isAdmin = user ? ADMIN_EMAILS.includes(user.email) : false;
 
-            // Если залогинен, но не админ — принудительно выходим
             if (user && !isAdmin) {
                 auth.signOut();
                 showToast('Доступ только для администраторов', 'error');
@@ -1604,12 +1681,16 @@
                     <div class="user-dropdown" id="userDropdown">
                         <button class="dropdown-item" onclick="switchPage('songs')">🎵 Песни</button>
                         <button class="dropdown-item" onclick="switchPage('sunday')">📖 На воскресенье</button>
+                        <button class="dropdown-item" onclick="switchPage('profile')">👤 Профиль</button>
                         <button class="dropdown-item" onclick="switchPage('admin')">👑 Админ-панель</button>
                         <button class="dropdown-item danger" onclick="logout()">🚪 Выйти</button>
                     </div>`;
             } else {
                 headerRight.innerHTML = '<button class="auth-btn" onclick="openAuthModal()">Войти</button>';
             }
+
+            // Обновляем список админов и профиль
+            renderAdminList();
         }
 
         function toggleDropdown() {
@@ -1655,6 +1736,7 @@
             updateUI(user);
             if (document.getElementById('page-songs').classList.contains('active')) renderSongs();
             if (document.getElementById('page-sunday').classList.contains('active')) renderSundayPage();
+            if (document.getElementById('page-profile').classList.contains('active')) loadProfilePage();
             if (document.getElementById('page-admin').classList.contains('active') && isAdmin) loadAdminData();
         });
 
