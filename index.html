@@ -30,6 +30,9 @@
             --red: #c0392b;
             --blue-accent: #3a7bd5;
             --sunday: #8e44ad;
+            --brothers: #2a6fdb;
+            --sisters: #d63384;
+            --all: #c9a84c;
             --bottom-nav-height: 64px;
             --safe-bottom: env(safe-area-inset-bottom, 0px);
             --safe-top: env(safe-area-inset-top, 0px);
@@ -426,12 +429,94 @@
         .modal-key { color: var(--gold-light); font-size: 0.8rem; margin-top: 4px; }
         .modal-body { padding: 20px; }
         .modal-lyrics {
-            white-space: pre-wrap; line-height: 1.8;
+            white-space: normal; line-height: 1.8;
             font-size: calc(0.9rem * var(--lyrics-font-size));
             margin-bottom: 20px; padding-bottom: 20px;
             border-bottom: 2px solid var(--border-color);
             font-family: 'Inter', sans-serif;
         }
+        /* ===== Стили разметки песни ===== */
+        .lyrics-block { margin-bottom: 22px; }
+        .lyrics-block:last-child { margin-bottom: 0; }
+        .lyrics-block-title {
+            display: inline-block;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+            font-size: calc(0.72rem * var(--lyrics-font-size));
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            padding: 4px 14px;
+            border-radius: 20px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            color: var(--gold-light);
+            margin-bottom: 12px;
+        }
+        .lyrics-block-title.verse { background: linear-gradient(135deg, #1a2a4a, #2a3f6e); }
+        .lyrics-block-title.chorus { background: linear-gradient(135deg, #8e44ad, #a05fc0); color: #fff; }
+        .lyrics-block-title.bridge { background: linear-gradient(135deg, #2a6fdb, #3a7bd5); color: #fff; }
+        .lyrics-block-title.instrumental { background: linear-gradient(135deg, #6b6b6b, #888); color: #fff; }
+        .lyrics-block-title.other { background: linear-gradient(135deg, var(--gold-dark), var(--gold)); color: var(--primary); }
+
+        .lyrics-line {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            padding: 6px 10px 6px 12px;
+            margin-bottom: 4px;
+            border-radius: 8px;
+            border-left: 4px solid transparent;
+            transition: background 0.2s;
+        }
+        .lyrics-line:last-child { margin-bottom: 0; }
+        .lyrics-line-text {
+            flex: 1;
+            white-space: pre-wrap;
+            word-break: break-word;
+        }
+        .lyrics-role-tag {
+            flex-shrink: 0;
+            font-size: calc(0.65rem * var(--lyrics-font-size));
+            font-weight: 700;
+            padding: 3px 8px;
+            border-radius: 6px;
+            min-width: 28px;
+            text-align: center;
+            margin-top: 2px;
+            letter-spacing: 0.5px;
+            line-height: 1.2;
+        }
+        /* Метки: Б — братья, Ж — сёстры, В — все */
+        .lyrics-line.role-brothers {
+            background: rgba(42, 111, 219, 0.08);
+            border-left-color: var(--brothers);
+        }
+        .lyrics-line.role-brothers .lyrics-role-tag {
+            background: var(--brothers);
+            color: #fff;
+        }
+        .lyrics-line.role-sisters {
+            background: rgba(214, 51, 132, 0.08);
+            border-left-color: var(--sisters);
+        }
+        .lyrics-line.role-sisters .lyrics-role-tag {
+            background: var(--sisters);
+            color: #fff;
+        }
+        .lyrics-line.role-all {
+            background: rgba(201, 168, 76, 0.12);
+            border-left-color: var(--all);
+        }
+        .lyrics-line.role-all .lyrics-role-tag {
+            background: var(--all);
+            color: var(--primary);
+        }
+        .lyrics-empty {
+            color: var(--text-lighter);
+            font-style: italic;
+            text-align: center;
+            padding: 20px;
+        }
+
         .lyrics-font-controls { display: flex; gap: 8px; align-items: center; margin-bottom: 16px; }
         .lyrics-font-btn {
             padding: 6px 12px; background: var(--gold); color: var(--primary);
@@ -459,6 +544,28 @@
         .form-btn.sunday { background: var(--sunday); color: #fff; }
         .form-btn.secondary { background: var(--border-color); color: var(--text); }
         .form-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+
+        .format-hint {
+            background: var(--bg);
+            border: 1px dashed var(--border-color);
+            border-radius: 10px;
+            padding: 10px 12px;
+            font-size: 0.75rem;
+            color: var(--text-light);
+            line-height: 1.6;
+            margin-bottom: 10px;
+        }
+        .format-hint code {
+            background: var(--card-bg);
+            padding: 1px 5px;
+            border-radius: 4px;
+            font-size: 0.72rem;
+            color: var(--gold-dark);
+            font-weight: 600;
+        }
+        .format-hint .tag-b { color: var(--brothers); font-weight: 700; }
+        .format-hint .tag-s { color: var(--sisters); font-weight: 700; }
+        .format-hint .tag-a { color: var(--gold-dark); font-weight: 700; }
 
         .comments-section { padding: 0 20px 20px; }
         .comments-list {
@@ -668,7 +775,17 @@
                     <div class="form-group"><input type="text" id="adminTitle" class="form-input" placeholder="Название песни" /></div>
                     <div class="form-group"><input type="text" id="adminKey" class="form-input" placeholder="Тональность (например: C, G, Am)" /></div>
                     <div class="form-group"><select id="adminCategory" class="form-input"></select></div>
-                    <div class="form-group"><textarea id="adminLyrics" class="form-input" rows="4" placeholder="Текст песни"></textarea></div>
+                    <div class="form-group">
+                        <div class="format-hint">
+                            <strong>Разметка текста:</strong><br>
+                            <code>[Куплет]</code> <code>[Припев]</code> <code>[Бридж]</code> <code>[Проигрыш]</code> — заголовки блоков.<br>
+                            <span class="tag-b">{М}</span> или <span class="tag-b">{Б}</span> — строка <strong>братьев</strong> (синяя).<br>
+                            <span class="tag-s">{Ж}</span> или <span class="tag-s">{С}</span> — строка <strong>сестёр</strong> (розовая).<br>
+                            <span class="tag-a">{В}</span> — строка <strong>всех</strong> (золотая).<br>
+                            Без метки — обычная строка. Пустая строка — разделитель.
+                        </div>
+                        <textarea id="adminLyrics" class="form-input" rows="6" placeholder="Введите текст с разметкой..."></textarea>
+                    </div>
                     <button class="form-btn primary" onclick="addSong()" style="width:100%;">➕ Добавить песню</button>
                 </div>
                 <div class="admin-tab-content" id="adminTab-manage">
@@ -706,7 +823,15 @@
                     <div class="form-group"><input type="text" class="form-input" id="editTitle" placeholder="Название" /></div>
                     <div class="form-group"><input type="text" class="form-input" id="editKey" placeholder="Тональность" /></div>
                     <div class="form-group"><select class="form-input" id="editCategory"></select></div>
-                    <div class="form-group"><textarea class="form-input" id="editLyrics" rows="6" placeholder="Текст песни"></textarea></div>
+                    <div class="form-group">
+                        <div class="format-hint">
+                            <strong>Разметка:</strong> <code>[Куплет]</code> <code>[Припев]</code> <code>[Бридж]</code> <code>[Проигрыш]</code>;
+                            <span class="tag-b">{М}</span>/<span class="tag-b">{Б}</span> — братья,
+                            <span class="tag-s">{Ж}</span>/<span class="tag-s">{С}</span> — сёстры,
+                            <span class="tag-a">{В}</span> — все.
+                        </div>
+                        <textarea class="form-input" id="editLyrics" rows="8" placeholder="Текст песни с разметкой..."></textarea>
+                    </div>
                     <div style="display:flex;gap:8px;">
                         <button class="form-btn primary" onclick="saveEditSong()">💾 Сохранить</button>
                         <button class="form-btn secondary" onclick="cancelEditSong()">Отмена</button>
@@ -813,12 +938,106 @@
 
         function stripChords(text) {
             if (!text) return '';
-            return text.replace(/\[[^\]]*\]/g, '').trim();
+            return text.replace(/\[[^\]]*\]/g, '').replace(/\{(?:М|Б|M|Ж|С|W|В|A)\}/gi, '').replace(/[{}]/g, '').trim();
+        }
+
+        /* ===== Разбор разметки песни ===== */
+        function parseLyrics(rawText) {
+            const result = [];
+            if (!rawText) return result;
+            const lines = String(rawText).replace(/\r\n/g, '\n').split('\n');
+
+            let currentBlock = { title: '', type: 'other', lines: [] };
+            let hasTitle = false;
+
+            const headerRe = /^\s*[\[\(]\s*(.+?)\s*[\]\)]\s*$/;
+            const roleRe = /\{\s*([МБMЖСWAВ])\s*\}/i;
+
+            const detectBlockType = (title) => {
+                const t = (title || '').toLowerCase();
+                if (t.includes('куплет') || t.includes('verse') || /^v\d/.test(t) || t.includes('к-т') || t.includes('к.')). return 'verse';
+                if (t.includes('припев') || t.includes('chorus') || t.includes('chor') || t.includes('прип.')) return 'chorus';
+                if (t.includes('бридж') || t.includes('bridge') || t.includes('мост')) return 'bridge';
+                if (t.includes('проигрыш') || t.includes('instrumental') || t.includes('interlude') || t.includes('соло')) return 'instrumental';
+                return 'other';
+            };
+
+            const pushBlock = () => {
+                const hasContent = currentBlock.title || currentBlock.lines.length > 0;
+                if (hasContent) result.push(currentBlock);
+                currentBlock = { title: '', type: 'other', lines: [] };
+                hasTitle = false;
+            };
+
+            for (let i = 0; i < lines.length; i++) {
+                const line = lines[i];
+                const trimmed = line.trim();
+
+                // Заголовок блока
+                const headerMatch = trimmed.match(headerRe);
+                if (headerMatch) {
+                    pushBlock();
+                    currentBlock.title = headerMatch[1].trim();
+                    currentBlock.type = detectBlockType(currentBlock.title);
+                    hasTitle = true;
+                    continue;
+                }
+
+                // Пустая строка — разделитель
+                if (trimmed === '') {
+                    if (currentBlock.lines.length > 0) pushBlock();
+                    continue;
+                }
+
+                // Определяем роль
+                let role = null;
+                const roleMatch = trimmed.match(roleRe);
+                if (roleMatch) {
+                    const tag = roleMatch[1].toUpperCase();
+                    if (tag === 'М' || tag === 'Б' || tag === 'M') role = 'brothers';
+                    else if (tag === 'Ж' || tag === 'С' || tag === 'W') role = 'sisters';
+                    else if (tag === 'В' || tag === 'A') role = 'all';
+                }
+
+                // Убираем метки из текста
+                const text = line.replace(/\{\s*[МБMЖСWAВ]\s*\}/gi, '').replace(/\s+$/, '');
+
+                // Если есть метка — начинаем новый блок, если до этого были неразмеченные строки с заголовком
+                currentBlock.lines.push({ role, text: text });
+            }
+            pushBlock();
+            return result;
+        }
+
+        function renderLyricsHTML(rawText) {
+            const blocks = parseLyrics(rawText);
+            if (blocks.length === 0) {
+                return '<div class="lyrics-empty">Текст песни отсутствует</div>';
+            }
+
+            const roleLabel = { brothers: 'Б', sisters: 'Ж', all: 'В' };
+            const roleClass = { brothers: 'role-brothers', sisters: 'role-sisters', all: 'role-all' };
+
+            return blocks.map(block => {
+                const titleHtml = block.title
+                    ? `<div class="lyrics-block-title ${block.type}">${escHtml(block.title)}</div>`
+                    : '';
+
+                const linesHtml = block.lines.map(line => {
+                    const cls = line.role ? roleClass[line.role] : '';
+                    const tag = line.role
+                        ? `<span class="lyrics-role-tag">${roleLabel[line.role]}</span>`
+                        : '';
+                    const text = line.text === '' ? '&nbsp;' : escHtml(line.text);
+                    return `<div class="lyrics-line ${cls}">${tag}<div class="lyrics-line-text">${text}</div></div>`;
+                }).join('');
+
+                return `<div class="lyrics-block">${titleHtml}${linesHtml}</div>`;
+            }).join('');
         }
 
         function renderPlainText(text) {
-            if (!text) return '';
-            return escHtml(text);
+            return renderLyricsHTML(text);
         }
 
         function getUserName() {
@@ -1050,10 +1269,10 @@
                     const initial = [
                         { id: "song_1", number: 1, title: "Ты — мой Бог", key: "C", category: "Прочее",
                           date: "2025-09-15", preview: "Ты мой Бог...",
-                          lyrics: "Ты мой Бог, я прославляю Тебя" },
+                          lyrics: "[Куплет]\nТы мой Бог, я прославляю Тебя\n{М} Славлю Тебя, Господь\n{Ж} Славлю Тебя, Господь\n\n[Припев]\n{В} Ты свят, Ты свят" },
                         { id: "song_2", number: 2, title: "Свят, свят, свят", key: "G", category: "Прочее",
                           date: "2025-08-20", preview: "Свят...",
-                          lyrics: "Свят, свят, свят — Господь Вседержитель" }
+                          lyrics: "[Куплет]\nСвят, свят, свят — Господь Вседержитель\n\n[Припев]\n{В} Свят, свят, свят" }
                     ];
                     const batch = db.batch();
                     initial.forEach(s => batch.set(db.collection('songs').doc(s.id), s));
@@ -1107,7 +1326,7 @@
                 ? '<p style="text-align:center;padding:40px;color:var(--text-lighter);">Нет песен</p>'
                 : songs.map(s => {
                     const isSun = isSundaySong(s.id);
-                    const previewText = stripChords(s.lyrics || '').substring(0, 100);
+                    const previewText = stripChords(s.lyrics || '').replace(/\n+/g, ' ').substring(0, 100);
                     return `<div class="song-card ${isSun ? 'sunday-marked' : ''}">
                         <div class="song-card-header" onclick="openSongModal('${s.id}')">
                             ${isSun ? '<div class="sunday-badge">📖 На воскресенье</div>' : ''}
@@ -1160,11 +1379,9 @@
 
         /* ========== Профиль ========== */
         async function loadProfilePage() {
-            // Админ-список показываем в любом случае
             renderAdminList();
 
             if (!currentUser) {
-                // Без входа показываем сообщение, но список админов остаётся
                 document.getElementById('profileAvatarLarge').style.backgroundImage = '';
                 document.getElementById('profileAvatarLarge').style.backgroundColor = 'var(--border-color)';
                 document.getElementById('profileAvatarLarge').textContent = '👤';
@@ -1228,7 +1445,7 @@
             document.getElementById('modalTitle').textContent = song.title || '';
             document.getElementById('modalNumber').textContent = '№ ' + (song.number || '?');
             document.getElementById('modalKey').textContent = song.key ? 'Тональность: ' + song.key : '';
-            document.getElementById('modalLyrics').innerHTML = renderPlainText(song.lyrics || '');
+            document.getElementById('modalLyrics').innerHTML = renderLyricsHTML(song.lyrics || '');
             document.getElementById('editFormContainer').classList.remove('active');
             document.getElementById('adminModalButtons').style.display = isAdmin ? 'flex' : 'none';
             const sundayBtn = document.getElementById('modalSundayBtn');
@@ -1493,7 +1710,7 @@
                 document.getElementById('modalNumber').textContent = '№ ' + number;
                 document.getElementById('modalCategory').textContent = category;
                 document.getElementById('modalKey').textContent = key ? 'Тональность: ' + key : '';
-                document.getElementById('modalLyrics').innerHTML = renderPlainText(lyrics);
+                document.getElementById('modalLyrics').innerHTML = renderLyricsHTML(lyrics);
             } catch (e) {
                 console.error('saveEditSong error:', e);
                 showToast('Ошибка: ' + e.message, 'error');
@@ -1689,7 +1906,6 @@
                 headerRight.innerHTML = '<button class="auth-btn" onclick="openAuthModal()">Войти</button>';
             }
 
-            // Обновляем список админов и профиль
             renderAdminList();
         }
 
